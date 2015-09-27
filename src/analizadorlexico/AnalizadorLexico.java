@@ -5,9 +5,16 @@
  */
 package analizadorlexico;
 
+import static analizadorlexico.Token.ELSE;
 import static analizadorlexico.Token.ERROR;
+import static analizadorlexico.Token.FOR;
 import static analizadorlexico.Token.ID;
+import static analizadorlexico.Token.IF;
+import static analizadorlexico.Token.INT;
 import static analizadorlexico.Token.NUM;
+import static analizadorlexico.Token.RETURN;
+import static analizadorlexico.Token.VOID;
+import static analizadorlexico.Token.WHILE;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -54,8 +61,12 @@ public class AnalizadorLexico {
 					}else{
                                             if (token == ERROR){
                                                 result=result+"Error, no existe token \r\n";
-                                            }else if (token == ID || token == NUM){
-                                            result=result+"(Simbolo: "+token+" "+lexer.lexeme+")\r\n";
+                                            }else if (token == ID){
+                                            result=result+"(Identificador: "+" "+lexer.lexeme+")\r\n";
+                                            }else if (token == NUM){
+                                            result=result+"(Numero: "+" "+lexer.lexeme+")\r\n";    
+                                            }else if (token==ELSE ||token==IF ||token==INT ||token==VOID ||token==RETURN ||token==WHILE ||token==FOR){ 
+                                                result=result+"(Palabra reservada: "+token+")\r\n";
                                             }else{
                                                 result=result+"(Simbolo: "+token+")\r\n";
                                                 }

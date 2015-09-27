@@ -25,13 +25,13 @@ public String lexeme;
 %}
 %%
 {WHITE} {/*Ignore*/}
-else {return ELSE;}
-if {return IF;}
-int {return INT;}
-void {return VOID;}
-return {return RETURN;}
+{e}{l}{s}{e} {return ELSE;}
+{i}{f} {return IF;}
+{i}{n}{t} {return INT;}
+{v}{o}{i}{d} {return VOID;}
+{r}{e}{t}{u}{r}{n} {return RETURN;}
 {w}{h}{i}{l}{e} {return WHILE;}
-for {return FOR;}
+{f}{o}{r} {return FOR;}
 "+" {return SUMA;}
 "-" {return RESTA;}
 "*" {return MULT;}
