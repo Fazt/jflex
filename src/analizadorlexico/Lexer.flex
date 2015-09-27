@@ -30,7 +30,7 @@ if {return IF;}
 int {return INT;}
 void {return VOID;}
 return {return RETURN;}
-while {return WHILE;}
+{w}{h}{i}{l}{e} {return WHILE;}
 for {return FOR;}
 "+" {return SUMA;}
 "-" {return RESTA;}
