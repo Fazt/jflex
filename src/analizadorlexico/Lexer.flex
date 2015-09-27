@@ -3,13 +3,9 @@ import static analizadorlexico.Token.*;
 %%
 %class Lexer
 %type Token
-L = [a-zA-Z]
-D = [0-9]
 WHITE=[ \t\r\n]
 COMENT1= \%.*[\r\n]
 COMENT2= \/\#([^\#]|[\r\n]|(\#+([^\#\/]|[\r\n])))*\#+\/
-IDENT= [a-z]([L|D]*[_]?)[L|D]+
-NUMERO= ([1-9][0-9]+)|[0-9]
 f=f|F
 w=w|W
 h=h|H
@@ -47,7 +43,7 @@ for {return FOR;}
 ">=" {return GEQ;}
 "=" {return EQ;}
 "!=" {return NEQ;}
-":=" {return ASIGN;}
+"::=" {return ASIGN;}
 "(" {return PRI;}
 ")" {return PRD;}
 "[" {return PCI;}
@@ -58,6 +54,6 @@ for {return FOR;}
 "." {return POINT;}
 {COMENT1} {/*Ignore*/}
 {COMENT2} {/*Ignore*/}
-{IDENT} {lexeme=yytext(); return ID;}
-{NUMERO} {lexeme=yytext(); return NUM;}
+[a-z]([A-Za-z0-9]*[_]?)[A-Za-z0-9]+ {lexeme=yytext(); return ID;}
+([1-9][0-9]+)|[0-9] {lexeme=yytext(); return NUM;}
 . {return ERROR;}
