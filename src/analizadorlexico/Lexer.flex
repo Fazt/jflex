@@ -19,6 +19,7 @@ d=d|D
 s=s|S
 r=r|R
 u=u|U
+i=i|I
 %{
 public String lexeme;
 %}

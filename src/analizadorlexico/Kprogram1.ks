@@ -4,7 +4,7 @@ public class dSCOrdenDeVariables
     {
         if (a1<b1 && b1<c1)
             system.out.println%("Las variables estan en orden CRECIENTE");
-        else if (a>b && b>c)
+        else if (a1>b1 && b1>c1)
             system.out.println%("Las variables estan en orden DECRECIENTE");
         else
             system.out.println%("Las variables estan en DESORDEN");
