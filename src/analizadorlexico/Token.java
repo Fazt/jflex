@@ -8,6 +8,7 @@ package analizadorlexico;
 /**
  *
  * @author Spartan
+ * Lista de tokens usados por el programa.
  */
 public enum Token {
     ELSE,IF,INT,VOID,RETURN,WHILE,FOR,SUMA,RESTA,MULT,DIV,EXP1,EXP2,LT,LEQ,GT,GEQ,EQ,

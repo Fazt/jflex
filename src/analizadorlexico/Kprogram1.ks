@@ -1,13 +1,15 @@
+/#Este programa determina
+el orden de las variables#/
 public class dSCOrdenDeVariables
 {
     void detectaOrden( a1; b1; c1)
     {
         if (a1<b1 && b1<c1)
-            system.out.println%("Las variables estan en orden CRECIENTE");
+            system.out.println %("Las variables estan en orden CRECIENTE");
         else if (a1>b1 && b1>c1)
-            system.out.println%("Las variables estan en orden DECRECIENTE");
+            system.out.println %("Las variables estan en orden DECRECIENTE");
         else
-            system.out.println%("Las variables estan en DESORDEN");
+            system.out.println %("Las variables estan en DESORDEN");
     }
  
     public static void main(string[] args)
@@ -16,7 +18,7 @@ public class dSCOrdenDeVariables
  
         variable = new dSCOrdenDeVariables();
         if(args.length<3)
-            system.out.println%("Debe ingresar 3 variables");
+            system.out.println %("Debe ingresar 3 variables");
         else
         {   
             a1=integer.parseInt(args[0]);
