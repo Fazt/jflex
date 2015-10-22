@@ -38,12 +38,12 @@ public String lexeme;
 "/" {return DIV;}
 "^" {return EXP1;}
 "**" {return EXP2;}
-"<" {return LT;}
-"<=" {return LEQ;}
-">" {return GT;}
-">=" {return GEQ;}
-"=" {return EQ;}
-"!=" {return NEQ;}
+"LT" {return LT;}
+"LEQ" {return LEQ;}
+"GT" {return GT;}
+"GEQ" {return GEQ;}
+"EQ" {return EQ;}
+"NEQ" {return NEQ;}
 "::=" {return ASIGN;}
 "(" {return PRI;}
 ")" {return PRD;}
@@ -53,6 +53,7 @@ public String lexeme;
 "}" {return LLD;}
 ";" {return PCOMMA;}
 "." {return POINT;}
+"," {return COMMA;}
 {COMENT1} {/*Ignore*/}
 {COMENT2} {/*Ignore*/}
 [a-z]([A-Za-z0-9]*[_]?)[A-Za-z0-9]+ {lexeme=yytext(); return ID;}
