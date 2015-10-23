@@ -4,7 +4,7 @@
 // Fri Oct 23 11:37:04 GMT-03:00 2015
 //----------------------------------------------------
 
-package Parser;
+package Tablas;
 
 /** CUP generated class containing symbol constants. */
 public class sym {

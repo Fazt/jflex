@@ -95,12 +95,12 @@ Error, no existe token
 (Simbolo: LLI)
 (Palabra reservada: INT)
 Error, no existe token 
-(Simbolo: EQ)
+Error, no existe token 
 (Numero:  0)
 (Simbolo: PCOMMA)
 (Identificador:  dSCDiaSemana)
 (Identificador:  semana)
-(Simbolo: EQ)
+Error, no existe token 
 (Identificador:  new)
 (Identificador:  dSCDiaSemana)
 (Simbolo: PRI)
@@ -111,8 +111,8 @@ Error, no existe token
 (Identificador:  args)
 (Simbolo: POINT)
 (Identificador:  length)
-(Simbolo: EQ)
-(Simbolo: EQ)
+Error, no existe token 
+Error, no existe token 
 (Numero:  0)
 (Simbolo: PRD)
 (Simbolo: LLI)
@@ -128,11 +128,11 @@ Error, no existe token
 (Simbolo: PRI)
 (Palabra reservada: INT)
 (Identificador:  i1)
-(Simbolo: EQ)
+Error, no existe token 
 (Numero:  0)
 (Simbolo: PCOMMA)
 Error, no existe token 
-(Simbolo: LT)
+Error, no existe token 
 (Identificador:  args)
 (Simbolo: POINT)
 (Identificador:  length)
@@ -143,7 +143,7 @@ Error, no existe token
 (Simbolo: PRD)
 (Simbolo: LLI)
 Error, no existe token 
-(Simbolo: EQ)
+Error, no existe token 
 (Identificador:  integer)
 (Simbolo: POINT)
 (Identificador:  parseInt)

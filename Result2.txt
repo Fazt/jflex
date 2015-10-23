@@ -5,7 +5,8 @@
 (Palabra reservada: WHILE)
 (Simbolo: PRI)
 (Identificador:  x1)
-(Simbolo: LEQ)
+Error, no existe token 
+Error, no existe token 
 (Numero:  100)
 (Simbolo: PRD)
 (Simbolo: LLI)
@@ -19,7 +20,7 @@
 (Palabra reservada: IF)
 (Simbolo: PRI)
 (Identificador:  x1)
-(Simbolo: EQ)
+Error, no existe token 
 (Numero:  160)
 (Simbolo: PRD)
 (Simbolo: LLI)

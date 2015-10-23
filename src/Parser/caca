@@ -2,9 +2,7 @@ package parser;
 
 import java_cup.runtime.*;
 import ast.*;
-import analizadorlexico.Lexer;
 import analizadorlexico.Token;
-import java.io.FileReader;
 
 parser code
 {:
@@ -16,6 +14,7 @@ parser code
 		System.out.println("Error de sintaxis detectado.");
 		report_error("Error de sintaxis", null);
 	}
+	
 :}
 
 /*_________________________________TERMINALES______________________________*/
@@ -46,37 +45,38 @@ start with program;
 program ::= declaration_list:e
 			{:
 				this.parser.root = e;
-				
+				RESULT = this.parser.root;
 				this.parser.producciones += "program :: == declaration_list \n";
 			:};
 			
 declaration_list ::= declaration_list:dl declaration:d
             {: 
-            
+            RESULT = new algo();
             this.parser.producciones += "declaration_list::= declaration_list declaration  \n";
             :}
             |declaration:d
             {:
-            
+            RESULT = d;
             this.parser.producciones += "declaration ::= declaration  \n";
             :};
 declaration ::= var_declaration:vd
             {:
-            
+            RESULT = vd;
             this.parser.producciones += "declaration ::= var_declaration  \n";
             :}
             |fun_declaration:fd
             {:
+            RESULT=fd;
             this.parser.producciones += "declaration ::= fun_declaration \n";
             :};
 var_declaration::= type_specifier:ts ID PCOMMA 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "var_declaration ::=  type_specifier ID ; \n";
             :}
             |type_specifier:ts ID PCI NUM PCD PCOMMA 
             {:
-
+            RESULT= new algo();
             this.parser.producciones += "var_declaration::= type_specifier ID [ NUM ];\n";
             :};
 type_specifier::=  INT 
@@ -89,12 +89,12 @@ type_specifier::=  INT
             :};
 fun_declaration::= type_specifier:ts ID PRI params:p PRD compound_stmt:cs
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "type_specifier::= type_specifier ID ( params ) compound_stmt \n";
             :};
 params::= param_list:pl 
             {:
-            
+            RESULT = pl;
             this.parser.producciones += "params::= param_list \n";
             :}
             | VOID 
@@ -103,32 +103,32 @@ params::= param_list:pl
             :};
 param_list::= param_list:pl COMMA param:p 
             {:
-            
+            RESULT = new algo ();
             this.parser.producciones += "param_list::= param_list , param   \n";
             :}
             | param:p
             {:
-            
+            RESULT =  p;
             this.parser.producciones += "  \n";
             :};
 param::= type_specifier:ts ID:id  
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += " param::= type_specifier ID \n";
             :}
             | type_specifier ID PCI PCD 
             {:
-             
+            RESULT = new algo(); 
             this.parser.producciones += "param::= type_specifier ID [ ] \n";
             :};
 compound_stmt::= LLI local_declarations:ld statement_list:sl LLD 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += " compound_stmt::= { local_declarations statement_list }   \n";
             :};
 local_declarations::=  local_declarations:ld var_declaration:vd  
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "compound_stmt::= local_declarations var_declaration \n";
             :}
             | empty  
@@ -137,7 +137,7 @@ local_declarations::=  local_declarations:ld var_declaration:vd
             :};
 statement_list::= statement_list:sl statement:s 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | empty 
@@ -146,87 +146,87 @@ statement_list::= statement_list:sl statement:s
             :};
 statement::= expression_stmt:es     
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | compound_stmt:cs
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | selection_stmt:ss
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | iteration_stmt:is
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | return_stmt:rs
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :};
 expression_stmt::= expression:e PCOMMA  
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | PCOMMA
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :};
 selection_stmt::= IF PRI expression:e PRD statement:s  
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | IF PRI expression:e PRD statement:s1 ELSE statement:s2
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :};
 iteration_stmt::=  while_stmt:ws 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | for_stmt:fs
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :};
 while_stmt::= WHILE PRI expression:e PRD statement:s 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :};
 for_stmt::=  FOR PRI expression:e1 COMMA expression:e2 COMMA expression:e3 PRD statement:s
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :};
 return_stmt::= RETURN PCOMMA 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | RETURN expression:e PCOMMA 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :};
 expression::= var:v ASIGN expression:e 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | simple_expression:se
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :};
 var::= ID
@@ -235,152 +235,152 @@ var::= ID
             :}
             | ID:id PCI expression:e PCD
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :};
 simple_expression::= additive_expression:ae1 relop:r additive_expression:ae2  
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | additive_expression:ae
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :};
 relop::= LEQ   
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | LT  
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | GT
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | GEQ
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | EQ 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | NEQ 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :};         
 additive_expression::= additive_expression:ae addop:ad term:t 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | term:t 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :};
 addop::= SUMA 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | RESTA
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :};
 term::=  term:t mulop:m factor:f 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | factor:f
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :};
 mulop::= MULT
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | DIV 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :};
 factor::= factor:f powop:p exp:e 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | exp:e
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :};
 powop::= EXP1
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | EXP2
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :};
 exp::= PRI expression:e PRD 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | var:v
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | call:c 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | NUM:n 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :};
                
 call::=  ID PRI args:a PRD 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :};
 args::=  arg_list:al 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | empty 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :};
 arg_list::= arg_list:al COMMA expression:e 
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :}
             | expression
             {:
-            
+            RESULT = new algo();
             this.parser.producciones += "  \n";
             :};

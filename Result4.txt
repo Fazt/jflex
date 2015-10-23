@@ -26,19 +26,19 @@
 (Identificador:  ancho)
 (Simbolo: PCOMMA)
 (Identificador:  altura)
-(Simbolo: EQ)
+Error, no existe token 
 (Numero:  33)
 (Simbolo: PCOMMA)
 (Identificador:  base)
-(Simbolo: EQ)
+Error, no existe token 
 (Numero:  10)
 (Simbolo: PCOMMA)
 (Identificador:  ancho)
-(Simbolo: EQ)
+Error, no existe token 
 (Numero:  23)
 (Simbolo: PCOMMA)
 (Identificador:  volumen)
-(Simbolo: EQ)
+Error, no existe token 
 (Simbolo: PRI)
 (Identificador:  base)
 (Simbolo: MULT)

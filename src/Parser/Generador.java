@@ -11,10 +11,10 @@ public class Generador {
     	argv[1] = "src"+File.separator+"parser";
     	//Nombre del paquete: "Parser"
     	argv[2] = "-package";
-    	argv[3] = "Analizador";
+    	argv[3] = "Parser";
     	//Nombre de la clase: "Parser"
     	argv[4] = "-parser";
-    	argv[5] = "Analizer";
+    	argv[5] = "parser";
     	//Archivo fuente.
     	argv[6] = "src"+File.separator+"parser"+ File.separator + "Parser.cup";
     	//Generar
