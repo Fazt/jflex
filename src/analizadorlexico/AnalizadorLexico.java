@@ -5,25 +5,9 @@
  */
 package analizadorlexico;
 //
-import static analizadorlexico.Token.ELSE;
-import static analizadorlexico.Token.ERROR;
-import static analizadorlexico.Token.FOR;
-import static analizadorlexico.Token.ID;
-import static analizadorlexico.Token.IF;
-import static analizadorlexico.Token.INT;
-import static analizadorlexico.Token.NUM;
-import static analizadorlexico.Token.RETURN;
-import static analizadorlexico.Token.VOID;
-import static analizadorlexico.Token.WHILE;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 /**
  *
  * @author Spartan

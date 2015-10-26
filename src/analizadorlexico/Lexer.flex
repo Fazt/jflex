@@ -32,6 +32,7 @@ Symbol newSym(int tokenId, Object value) {
     return new Symbol(tokenId, yyline, yycolumn, value);
 }
 %}
+SALTO=\n|\r|\r\n 
 WHITE=[ \t\r\n]
 COMENT1= \%.*[\r\n]
 COMENT2= \/\#([^\#]|[\r\n]|(\#+([^\#\/]|[\r\n])))*\#+\/
@@ -53,6 +54,8 @@ i=i|I
 public String lexeme;
 %}
 %%
+
+{SALTO} {/*Null*/}
 {WHITE} {/*Ignore*/}
 {e}{l}{s}{e} {return newSym( sym.ELSE);}
 {i}{f} {return newSym( sym.IF);}

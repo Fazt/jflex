@@ -1,3 +1,1 @@
-int main (void){
-int z;
-}
+int x[2];
