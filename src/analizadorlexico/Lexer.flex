@@ -10,7 +10,7 @@ import java_cup.runtime.Symbol;
 %unicode
 %cup
 %caseless
-
+%ignorecase
 %eofval{
   return new java_cup.runtime.Symbol(sym.EOF);
 %eofval}
@@ -32,7 +32,8 @@ Symbol newSym(int tokenId, Object value) {
     return new Symbol(tokenId, yyline, yycolumn, value);
 }
 %}
-SALTO=\n|\r|\r\n 
+ID=[a-z]([A-Za-z0-9]*[_]?)[A-Za-z0-9]+
+NUM=([1-9][0-9]+)|[0-9] 
 WHITE=[ \t\r\n]
 COMENT1= \%.*[\r\n]
 COMENT2= \/\#([^\#]|[\r\n]|(\#+([^\#\/]|[\r\n])))*\#+\/
@@ -54,9 +55,7 @@ i=i|I
 public String lexeme;
 %}
 %%
-
-{SALTO} {/*Null*/}
-{WHITE} {/*Ignore*/}
+<YYINITIAL>{
 {e}{l}{s}{e} {return newSym( sym.ELSE);}
 {i}{f} {return newSym( sym.IF);}
 {i}{n}{t} {return newSym( sym.INT);}
@@ -86,8 +85,10 @@ public String lexeme;
 ";" {return newSym( sym.PCOMMA);}
 "." {return newSym( sym.POINT);}
 "," {return newSym( sym.COMMA);}
+{ID} {return new Symbol( sym.ID, yyline,yycolumn,yytext());}
+{NUM} {return new Symbol( sym.NUM,yyline,yycolumn, new Integer(yytext()));}
 {COMENT1} {/*Ignore*/}
 {COMENT2} {/*Ignore*/}
-[a-z]([A-Za-z0-9]*[_]?)[A-Za-z0-9]+ {lexeme=yytext(); return newSym( sym.ID);}
-([1-9][0-9]+)|[0-9] {lexeme=yytext(); return newSym( sym.NUM);}
-. {return newSym( sym.error);}
+{WHITE} {/*Ignore*/}
+}
+. {throw new Error( "Caracter ilegal <"+yytext()+">");}

@@ -6,7 +6,6 @@
 package Presentacion;
 
 import analizadorlexico.*;
-import Parser.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -39,11 +38,7 @@ public class Main {
         }
         Reader reader = new BufferedReader(new FileReader(dir[0]));
         Scanner lexer = new Scanner(reader);
-        while (true) {
-            Symbol s = lexer.next_token();
-            if (s.sym == 0) {
-                break;
-            }
+        while (lexer.next_token().sym != 0) {
             System.out.println(lexer.yytext());
         }
         parser par = new parser(lexer);
