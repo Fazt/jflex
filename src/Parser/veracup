@@ -1,0 +1,497 @@
+package parser;
+
+import java_cup.runtime.*;
+
+import java_cup.parser;
+import java.io.*;
+
+import AbstractSyntaxTree.*;
+import Symbols.Token.*;
+import scanner.Scanner;
+
+parser code{:
+
+    public NodeTree root = null; /* nodo raiz del arbol sintactico abstracto */
+    public String cadenaProduccion = " "; /* contiene la cadena de producciones */
+
+    public void report_fatal_error(String message, Object info) {
+        report_error(message, info);
+        System.exit(1);
+    }
+    public void report_error(String message, Object info) {
+        StringBuilder m = new StringBuilder("Error");
+        if (info instanceof java_cup.runtime.Symbol) {
+            java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
+            if (s.left >= 0) {                
+                m.append(" in line "+(s.left+1));
+                if (s.right >= 0)
+                    m.append(", column "+(s.right+1));
+            }
+        }
+        m.append(" : "+message + " -> Parser");
+        System.err.println(m);
+    }
+
+    public void syntax_error(Symbol s){
+        System.out.println("compiler has detected a syntax error at line " + s.left + " column " + s.right); 
+    }
+
+    /* Metodo encargado de iniciar el arbol sintactico abstracto */
+    public void setAbstractSyntaxTree(NodeTree n){
+        this.root = n;
+    }
+
+    /* Metodo encargado de obtener el arbol sintactico abstracto */
+    public NodeTree getAbstractSyntaxTree() throws Exception {
+        if(root == null){
+            this.parse();
+        }
+        return this.root;
+    }
+
+    public static void main(String [] args){
+        try{
+            Parser p = new Parser(new Scanner( new FileReader(args[0])));
+            Object result = p.parse().value;
+        }
+        catch(Exception e){
+        }
+    }
+:};
+
+
+
+
+/* **************************************************************** */
+/* ********************* SIMBOLOS TERMINALES ********************** */
+/* **************************************************************** */
+  
+terminal        String      ASSIGN, EXPO1, EXPO2, SUMA, MULT, RESTA, DIV;
+terminal        String      EQ, LT, LEQ, GT, GEQ, NEQ;
+terminal        String      LCURLYB, RCURLYB, LSQUAREB, RSQUAREB, LCIRCLEB, RCIRCLEB;
+terminal        String      SEMICOLON, COMMA;
+terminal        String      IF, ELSE, INT, RETURN, WHILE, FOR, VOID;
+terminal        String      ID;
+terminal        Integer     NUM;
+
+
+
+/* **************************************************************** */
+/* ******************** SIMBOLOS NO TERMINALES ******************** */
+/* **************************************************************** */
+
+non terminal        NodeProgram             program, declaration_list, declaration;  
+non terminal        Integer                 type_specifier;
+non terminal        NodeVarDeclaration      var_declaration;
+non terminal        NodeFunDeclaration      fun_declaration;  
+non terminal        NodeParamList           param_list;
+non terminal        NodeParams              params;
+non terminal        NodeTree                param;
+non terminal        NodeSelectionStmt       selection_stmt;
+non terminal        NodeTree                iteration_stmt, while_stmt, return_stmt;
+non terminal        NodeForStmt             for_stmt;
+non terminal        NodeTree                local_declarations, statement_list, statement, compound_stmt;   
+non terminal        Integer                 relop, addop, mulop, powop;
+non terminal        NodeTree                var, expression, exp, expression_stmt;
+non terminal        NodeTree                term, additive_expression, simple_expression;
+non terminal        NodeTree                factor, call, args, arg_list;
+   
+
+
+/* **************************************************************** */
+/* **************** ASOCIATIVIDAD Y PRECEDENCIA ******************* */
+/* **************************************************************** */
+
+precedence left ELSE;
+precedence left SUMA, RESTA;
+precedence left MULT, DIV;
+precedence left EXPO1, EXPO2;
+
+
+
+
+/* **************************************************************** */
+/* ************************** GRAMATICA *************************** */
+/* **************************************************************** */
+ 
+start with program;
+
+program             ::= declaration_list:dl 
+                            {:
+                                this.parser.cadenaProduccion = "program ::= declaration_list \n"+this.parser.cadenaProduccion;
+                                System.out.println(this.parser.cadenaProduccion);
+                            :};
+
+declaration_list    ::= declaration_list:dl declaration:d
+                            {:
+                                this.parser.cadenaProduccion = "declaration_list ::= declaration_list declaration \n"+this.parser.cadenaProduccion;
+                            :}
+                        | declaration:d 
+                            {:
+                                this.parser.cadenaProduccion = "declaration_list ::= declaration \n"+this.parser.cadenaProduccion;
+                            :};
+
+declaration         ::= var_declaration:vd 
+                            {:
+                                this.parser.cadenaProduccion = "declaration ::= var_declaration \n"+this.parser.cadenaProduccion;
+                                
+                            :} 
+                        | fun_declaration:fd 
+                            {:
+                                this.parser.cadenaProduccion = "declaration ::= fun_declaration \n"+this.parser.cadenaProduccion;
+                                
+                            :}
+                        | error:e
+                            {:
+                                parser.report_error("Syntax error, skip rest",e);
+                            :};
+
+var_declaration     ::= type_specifier:ts ID:id SEMICOLON
+                            {:
+                                this.parser.cadenaProduccion = "var_declaration ::= type_specifier ID SEMICOLON \n"+this.parser.cadenaProduccion;
+                                
+                            :}
+                        | type_specifier:ts ID:id LSQUAREB NUM:num RSQUAREB SEMICOLON 
+                            {:
+                                this.parser.cadenaProduccion = "var_declaration ::= type_specifier ID LSQUAREB NUM RSQUAREB SEMICOLON \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+type_specifier      ::= INT
+                            {:
+                                this.parser.cadenaProduccion = "type_specifier ::= INT \n"+this.parser.cadenaProduccion;
+                                
+                            :} 
+                        | VOID 
+                            {:
+                                this.parser.cadenaProduccion = "type_specifier ::= VOID \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+fun_declaration     ::= type_specifier:ts ID:id LCIRCLEB params:ps RCIRCLEB compound_stmt:cs 
+                            {:
+                                this.parser.cadenaProduccion = "fun_declaration ::= type_specifier ID LCIRCLEB params RCIRCLEB compound_stmt \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+params              ::= param_list:pl
+                            {:
+                                this.parser.cadenaProduccion = "params ::= param_list \n"+this.parser.cadenaProduccion;
+                                
+                            :} 
+                        | VOID
+                            {:
+                                this.parser.cadenaProduccion = "params ::= VOID \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+param_list          ::= param_list:pl COMMA param:p
+                            {:
+                                this.parser.cadenaProduccion = "param_list ::= param_list COMMA param \n"+this.parser.cadenaProduccion;
+                                
+                            :} 
+                        | param:p
+                            {:
+                                this.parser.cadenaProduccion = "param_list ::= param \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+param               ::= type_specifier:ts ID:id
+                            {:
+                                this.parser.cadenaProduccion = "param ::= type_specifier ID \n"+this.parser.cadenaProduccion;
+                                
+                            :}	
+                        | type_specifier:ts ID:id LSQUAREB RSQUAREB 
+                            {:
+                                this.parser.cadenaProduccion = "param ::= type_specifier ID LSQUAREB RSQUAREB \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+compound_stmt       ::= LCURLYB local_declarations:ld statement_list:sl RCURLYB 
+                            {:
+                                this.parser.cadenaProduccion = "compound_stmt ::= LCURLYB local_declarations statement_list RCURLYB \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+local_declarations  ::= local_declarations:ld var_declaration:vd 
+                            {:
+                                this.parser.cadenaProduccion = "local_declarations ::= local_declarations var_declaration \n"+this.parser.cadenaProduccion;
+                                
+                            :}
+                        |
+                            {:
+                                this.parser.cadenaProduccion = "local_declarations ::= EMPTY \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+statement_list      ::= statement_list:sl statement:s 
+                            {:
+                                this.parser.cadenaProduccion = "statement_list ::= statement_list statement \n"+this.parser.cadenaProduccion;
+                                
+                            :}  
+                        |
+                            {:
+                                this.parser.cadenaProduccion = "statement_list ::= EMPTY \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+statement           ::= expression_stmt:es 
+                            {:
+                                this.parser.cadenaProduccion = "statement ::= expression_stmt \n"+this.parser.cadenaProduccion;
+                                
+                            :} 
+                        | compound_stmt:cs 
+                            {:
+                                this.parser.cadenaProduccion = "statement ::= compound_stmt \n"+this.parser.cadenaProduccion;
+                                
+                            :} 
+                        | selection_stmt:ss 
+                            {:
+                                this.parser.cadenaProduccion = "statement ::= selection_stmt \n"+this.parser.cadenaProduccion;
+                                
+                            :} 
+                        | iteration_stmt:is 
+                            {:
+                                this.parser.cadenaProduccion = "statement ::= iteration_stmt \n"+this.parser.cadenaProduccion;
+                                
+                            :}	
+                        | return_stmt:rs 
+                            {:
+                                this.parser.cadenaProduccion = "statement ::= return_stmt \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+expression_stmt     ::= expression:e SEMICOLON 
+                            {:
+                                this.parser.cadenaProduccion = "expression_stmt ::= expression SEMICOLON \n"+this.parser.cadenaProduccion;
+                                
+                            :} 
+                        | SEMICOLON 
+                            {:
+                                this.parser.cadenaProduccion = "expression_stmt ::= SEMICOLON \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+selection_stmt      ::= IF LCIRCLEB expression:e RCIRCLEB statement:s 
+                            {:
+                                this.parser.cadenaProduccion = "selection_stmt ::= IF LCURLYB expression RCURLYB statement \n"+this.parser.cadenaProduccion;
+                                
+                            :} 
+                        | IF LCIRCLEB expression:e RCIRCLEB statement:s1 ELSE statement:s2 
+                            {:
+                                this.parser.cadenaProduccion = "selection_stmt ::= IF LCIRCLEB expression RCIRCLEB statement ELSE statement \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+iteration_stmt      ::= while_stmt:ws 
+                            {:
+                                this.parser.cadenaProduccion = "iteration_stmt ::= while_stmt \n"+this.parser.cadenaProduccion;
+                                
+                            :} 
+                        | for_stmt:fs 
+                            {:
+                                this.parser.cadenaProduccion = "iteration_stmt ::= for_stmt \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+while_stmt          ::= WHILE LCIRCLEB expression:e RCIRCLEB statement:s 
+                            {:
+                                this.parser.cadenaProduccion = "while_stmt ::= WHILE LCIRCLEB expression RCIRCLEB statement \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+for_stmt            ::= FOR LCIRCLEB expression:e1 SEMICOLON expression:e2 SEMICOLON expression:e3 RCIRCLEB statement:s 
+                            {:
+                                this.parser.cadenaProduccion = "for_stmt ::= FOR LCIRCLEB expression SEMICOLON expression SEMICOLON expression RCIRCLEB statement \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+return_stmt         ::= RETURN SEMICOLON 
+                            {:
+                                this.parser.cadenaProduccion = "return_stmt ::= RETURN SEMICOLON \n"+this.parser.cadenaProduccion;
+                                
+                            :}
+                        | RETURN expression:e SEMICOLON 
+                            {:
+                                this.parser.cadenaProduccion = "return_stmt ::= RETURN expression SEMICOLON \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+expression          ::= var:v ASSIGN expression:e 
+                            {:
+                                this.parser.cadenaProduccion = "expression ::= var ASSIGN expression \n"+this.parser.cadenaProduccion;
+                                
+                            :} 
+                        | simple_expression:se 
+                            {:
+                                this.parser.cadenaProduccion = "expression ::= simple_expression \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+var                 ::= ID:id
+                            {:
+                                this.parser.cadenaProduccion = "var ::= ID \n"+this.parser.cadenaProduccion;
+                                
+                            :} 
+                        | ID:id LSQUAREB expression:e RSQUAREB 
+                            {:
+                                this.parser.cadenaProduccion = "var ::= ID LSQUAREB expression RSQUAREB \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+simple_expression   ::= additive_expression:ae1 relop:r additive_expression:ae2 
+                            {:
+                                this.parser.cadenaProduccion = "simple_expression ::= additive_expression relop aditive_expression \n"+this.parser.cadenaProduccion;
+                                
+                            :} 
+                        | additive_expression:ae 
+                            {:
+                                this.parser.cadenaProduccion = "simple_expression ::= additive_expression \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+relop               ::= LEQ 
+                            {:
+                                this.parser.cadenaProduccion = "relop ::= LEQ \n"+this.parser.cadenaProduccion;
+                                
+                            :}
+                        | LT 
+                            {:
+                                this.parser.cadenaProduccion = "relop ::= LT \n"+this.parser.cadenaProduccion;
+                                
+                            :}
+                        | GT 
+                            {:
+                                this.parser.cadenaProduccion = "relop ::= GT \n"+this.parser.cadenaProduccion;
+                                
+                            :}
+                        | GEQ 
+                            {:
+                                this.parser.cadenaProduccion = "relop ::= GEQ \n"+this.parser.cadenaProduccion;
+                                
+                            :}
+                        | EQ 
+                            {:
+                                this.parser.cadenaProduccion = "relop ::= EQ \n"+this.parser.cadenaProduccion;
+                                
+                            :}
+                        | NEQ 
+                            {:
+                                this.parser.cadenaProduccion = "relop ::= NEQ \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+additive_expression ::= additive_expression:ae addop:a term:t 
+                            {:
+                                this.parser.cadenaProduccion = "additive_expression ::= additive_expression addop term \n"+this.parser.cadenaProduccion;
+                                
+                            :} 
+                        | term:t 
+                            {:
+                                this.parser.cadenaProduccion = "additive_expression ::= term \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+addop               ::= SUMA 
+                            {:
+                                this.parser.cadenaProduccion = "addop ::= SUMA \n"+this.parser.cadenaProduccion;
+                                
+                            :} 
+                        | RESTA 
+                            {:
+                                this.parser.cadenaProduccion = "addop ::= RESTA \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+term                ::= term:e mulop:m factor:f 
+                            {:
+                                this.parser.cadenaProduccion = "term ::= term mulop factor \n"+this.parser.cadenaProduccion;
+                                
+                            :} 
+                        | factor:f 
+                            {:
+                                this.parser.cadenaProduccion = "term ::= factor \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+mulop               ::= MULT 
+                            {:
+                                this.parser.cadenaProduccion = "mulop ::= MULT \n"+this.parser.cadenaProduccion;
+                                
+                            :} 
+                        | DIV 
+                            {:
+                                this.parser.cadenaProduccion = "mulop ::= DIV \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+factor              ::= factor:f powop:p exp:e 
+                            {:
+                                this.parser.cadenaProduccion = "factor ::= factor powop exp \n"+this.parser.cadenaProduccion;
+                                
+                            :}
+                        | exp:e 
+                            {:
+                                this.parser.cadenaProduccion = "factor ::= exp \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+powop               ::= EXPO1 
+                            {:
+                                this.parser.cadenaProduccion = "powop ::= EXPO1 \n"+this.parser.cadenaProduccion;
+                                
+                            :}
+                        | EXPO2 
+                            {:
+                                this.parser.cadenaProduccion = "powop ::= EXPO2 \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+exp                 ::= LCIRCLEB expression:e RCIRCLEB 
+                            {:
+                                this.parser.cadenaProduccion = "exp ::= LCIRCLEB expression RCIRCLEB \n"+this.parser.cadenaProduccion;
+                                
+                            :}
+                        | var:v 
+                            {:
+                                this.parser.cadenaProduccion = "exp ::= var \n"+this.parser.cadenaProduccion;
+                                
+                            :}
+                        | call:c 
+                            {:
+                                this.parser.cadenaProduccion = "exp ::= call \n"+this.parser.cadenaProduccion;
+                                
+                            :}
+                        | NUM:num
+                            {:
+                                this.parser.cadenaProduccion = "exp ::= NUM \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+call                ::= ID:id LCIRCLEB args:ar RCIRCLEB 
+                            {:
+                                this.parser.cadenaProduccion = "call ::= ID:id LCIRCLEB args RCIRCLEB \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+args                ::= arg_list:al 
+                            {:
+                                this.parser.cadenaProduccion = "args ::= arg_list \n"+this.parser.cadenaProduccion;
+                                
+                            :} 
+                        | 
+                            {:
+                                this.parser.cadenaProduccion = "args ::= EMPTY \n"+this.parser.cadenaProduccion;
+                                
+                            :};
+
+arg_list            ::= arg_list:al COMMA expression:e 
+                            {:
+                                this.parser.cadenaProduccion = "arg_list ::= arg_list COMMA expression \n"+this.parser.cadenaProduccion;
+                                
+                            :}  	
+                        | expression:e 
+                            {:
+                                this.parser.cadenaProduccion = "arg_list ::= expression \n"+this.parser.cadenaProduccion;
+                                
+                            :};

@@ -38,9 +38,10 @@ public class Main {
         }
         Reader reader = new BufferedReader(new FileReader(dir[0]));
         Scanner lexer = new Scanner(reader);
-        while (lexer.next_token().sym != 0) {
-            System.out.println(lexer.yytext());
-        }
+        //while (lexer.next_token().sym != 0) {
+        //    System.out.println(lexer.yytext());
+        //}
+        
         parser par = new parser(lexer);
         par.parse();
     }

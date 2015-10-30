@@ -101,7 +101,7 @@ var_declaration::= type_specifier:ts ID:id PCOMMA
             this.parser.producciones += "var_declaration::= type_specifier ID ; \n";
             System.out.println(this.parser.producciones);
             :}
-            |type_specifier:ts ID:id PCI NUM:num PCD PCOMMA 
+            |type_specifier:ts ID:id PCI NUM:num PCD PCOMMA
             {:
             this.parser.producciones += "var_declaration::=type_specifier ID [ NUM ];\n";
             System.out.println(this.parser.producciones);

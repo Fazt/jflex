@@ -9,7 +9,7 @@ import java.util.LinkedList;
  *
  * @author Spartan
  */
-public class algo extends SyntaxNode {
+public class NodeTree extends SyntaxNode {
     
     public void algo(){
     }
