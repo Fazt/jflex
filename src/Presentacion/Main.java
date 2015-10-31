@@ -40,6 +40,8 @@ public class Main {
         Scanner lexer = new Scanner(reader);
         while (lexer.next_token().sym != 0) {
             System.out.println(lexer.yytext());
+            System.out.println(lexer.lexeme);
+            
         }
         parser par = new parser(lexer);
         par.parse();

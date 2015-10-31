@@ -1,0 +1,460 @@
+package parser;
+
+import java_cup.runtime.*;
+import java.io.*;
+import java.util.ArrayList;
+
+import analizadorlexico.*;
+import ast.*;
+
+/* Codigo del parser, se copia integramente a la clase final.
+    Agregamos el manejo de errores. */
+parser code{:
+
+    public String cadena = " "; /* contiene la cadena de producciones */
+
+    public void report_fatal_error(String message, Object info) {
+        report_error(message, info);
+        System.exit(1);
+    }
+    public void report_error(String message, Object info) {
+        StringBuilder m = new StringBuilder("Error Sintactico");
+        if (info instanceof java_cup.runtime.Symbol) {
+            java_cup.runtime.Symbol s = ((java_cup.runtime.Symbol) info);
+            if (s.left >= 0) {                
+                m.append(" en linea "+(s.left+1));
+                if (s.right >= 0)
+                    m.append(", columna "+(s.right+1));
+            }
+        }
+        m.append(" : "+message + " -> Parser");
+        System.err.println(m);
+    }
+
+    public void syntax_error(Symbol s){
+        System.out.println("compiler has detected a syntax error at line " + s.left + " column " + s.right); 
+    }
+:};
+
+
+
+
+/* ------------Declaracion de simbolos terminales y no terminales---------- */
+   
+/* Terminales (tokens obtenidos por el analizador lexico).  
+
+   Terminales que no tienen un valor son listados primero, los terminales que
+   tienen un valor como los enteros son listados en la segunda o demas lineas. */
+
+terminal        String      ASIGN, EXP1, EXP2, SUMA, MULT, RESTA, DIV;
+terminal        String      EQ, LT, LEQ, GT, GEQ, NEQ;
+terminal        String      LLI, LLD, PCI, PCD, PRI, PRD;
+terminal        String      PCOMMA, COMMA;
+terminal        String      IF, ELSE, INT, RETURN, WHILE, FOR, VOID;
+terminal        String      ID;
+terminal        String      NUM;
+
+
+
+/* No terminales usados en la seccion gramatical. 
+
+   es esta seccion se listara los objetos Nodo que contendran la gramatica
+   y los que tengan un valor Object. Un Object se refiere a que
+   no tienen tipo, pudiendo ser entero o String.
+*/
+non terminal        SyntaxNode                program;
+non terminal        ExprBinary             declaration_list;  
+non terminal        String                 type_specifier;
+non terminal        ExprBinary      var_declaration, declaration;
+non terminal        ExprBinary      fun_declaration;  
+non terminal        ExprBinary           param_list;
+non terminal        ExprBinary              params;
+non terminal        ExprBinary                param;
+non terminal        ExprBinary       selection_stmt;
+non terminal        ExprBinary                iteration_stmt, while_stmt, return_stmt;
+non terminal        ExprBinary             for_stmt;
+non terminal        ExprBinary               local_declarations, statement_list;
+non terminal        ExprBinary            statement, compound_stmt;   
+non terminal        String                 relop, addop, mulop, powop;
+non terminal        ExprBinary                var, expression, exp, expression_stmt;
+non terminal        ExprBinary                term, additive_expression, simple_expression;
+non terminal        ExprBinary                factor, call, args, arg_list;
+   
+
+
+/* ------------------- Seccion de Precedencia ------------------------ */
+
+precedence left ELSE;
+precedence left SUMA, RESTA;
+precedence left MULT, DIV;
+precedence left EXP1, EXP2;
+
+
+
+
+/* ------------------- Seccion de la gramatica ------------------------ */
+ 
+start with program;
+
+program             ::= declaration_list:dl 
+                            {:
+                                this.parser.cadena = "program ::= declaration_list \n"+this.parser.cadena;
+                                System.out.println("Fin de analisis sintactico");
+                                System.out.println(this.parser.cadena);
+                                RESULT = dl;
+                            :};
+
+declaration_list    ::= declaration_list:dl declaration:d
+                            {:
+                                this.parser.cadena = "declaration_list ::= declaration_list declaration \n"+this.parser.cadena;
+                                RESULT=dl;
+                            :}
+                        | declaration:d 
+                            {:
+                                this.parser.cadena = "declaration_list ::= declaration \n"+this.parser.cadena;
+                            :};
+
+declaration         ::= var_declaration:vd 
+                            {:
+                                this.parser.cadena = "declaration ::= var_declaration \n"+this.parser.cadena;
+                                RESULT=vd;
+                            :} 
+                        | fun_declaration:fd 
+                            {:
+                                this.parser.cadena = "declaration ::= fun_declaration \n"+this.parser.cadena;
+                                RESULT=fd;
+                            :}
+                        | error:e
+                            {:
+                                parser.report_error("Syntax error, skip rest",e);
+                            :};
+
+var_declaration     ::= type_specifier:ts ID:id PCOMMA
+                            {:
+                                this.parser.cadena = "var_declaration ::= type_specifier ID SEMICOLON \n"+this.parser.cadena;
+                            :}
+                        | type_specifier:ts ID:id PCI NUM:num PCD PCOMMA 
+                            {:
+                                this.parser.cadena = "var_declaration ::= type_specifier ID LSQUAREB NUM RSQUAREB SEMICOLON \n"+this.parser.cadena;
+                            :};
+
+type_specifier      ::= INT:i
+                            {:
+                                this.parser.cadena = "type_specifier ::= INT \n"+this.parser.cadena;
+                                RESULT=i;
+                            :} 
+                        | VOID:v 
+                            {:
+                                this.parser.cadena = "type_specifier ::= VOID \n"+this.parser.cadena;
+                                RESULT=v;
+                            :};
+
+fun_declaration     ::= type_specifier:ts ID:id PRI params:ps PRD compound_stmt:cs 
+                            {:
+                                this.parser.cadena = "fun_declaration ::= type_specifier ID LCIRCLEB params RCIRCLEB compound_stmt \n"+this.parser.cadena;
+                                RESULT= ps;
+
+                            :};
+
+params              ::= param_list:pl
+                            {:
+                                this.parser.cadena = "params ::= param_list \n"+this.parser.cadena;
+                                RESULT=pl;
+                            :} 
+                        | VOID
+                            {:
+                                this.parser.cadena = "params ::= VOID \n"+this.parser.cadena;
+                              
+                            :};
+
+param_list          ::= param_list:pl COMMA param:p
+                            {:
+                                this.parser.cadena = "param_list ::= param_list COMMA param \n"+this.parser.cadena;
+                                RESULT=pl;
+                            :} 
+                        | param:p
+                            {:
+                                this.parser.cadena = "param_list ::= param \n"+this.parser.cadena;
+                            :};
+
+param               ::= type_specifier:ts ID:id
+                            {:
+                                this.parser.cadena = "param ::= type_specifier \n"+this.parser.cadena;
+                            :}	
+                        | type_specifier:ts ID:id PCI PCD
+                            {:
+                                this.parser.cadena = "param ::= type_specifier ID CORCH_IZQ CORCH_DER \n"+this.parser.cadena;
+                            :};
+
+compound_stmt       ::= LLI local_declarations:ld statement_list:sl LLD
+                            {:
+                                this.parser.cadena = "compound_stmt ::= LCURLYB local_declarations statement_list RCURLYB \n"+this.parser.cadena;
+                            :};
+
+local_declarations  ::= local_declarations:ld var_declaration:vd 
+                            {:
+                                this.parser.cadena = "local_declarations ::= local_declarations var_declaration \n"+this.parser.cadena;
+                                RESULT=ld;
+                            :}
+                        |
+                            {:
+                                this.parser.cadena = "local_declarations ::= EMPTY \n"+this.parser.cadena;
+                            :};
+
+statement_list      ::= statement_list:sl statement:s 
+                            {:
+                                this.parser.cadena = "statement_list ::= statement_list statement \n"+this.parser.cadena;
+                                RESULT=sl;
+                            :}  
+                        |
+                            {:
+                                this.parser.cadena = "statement_list ::= EMPTY \n"+this.parser.cadena;
+                            :};
+
+statement           ::= expression_stmt:es 
+                            {:
+                                this.parser.cadena = "statement ::= expression_stmt \n"+this.parser.cadena;
+                                RESULT=es;
+                            :} 
+                        | compound_stmt:cs 
+                            {:
+                                this.parser.cadena = "statement ::= compound_stmt \n"+this.parser.cadena;
+                                RESULT=cs;
+                            :} 
+                        | selection_stmt:ss 
+                            {:
+                                this.parser.cadena = "statement ::= selection_stmt \n"+this.parser.cadena;
+                                RESULT=ss;
+                            :} 
+                        | iteration_stmt:is 
+                            {:
+                                this.parser.cadena = "statement ::= iteration_stmt \n"+this.parser.cadena;
+                                RESULT=is;
+                            :}	
+                        | return_stmt:rs 
+                            {:
+                                this.parser.cadena = "statement ::= return_stmt \n"+this.parser.cadena;
+                                RESULT=rs;
+                            :};
+
+expression_stmt     ::= expression:e PCOMMA 
+                            {:
+                                this.parser.cadena = "expression_stmt ::= expression PUNTOCOMA \n"+this.parser.cadena;
+                                RESULT=e;
+                            :} 
+                        | PCOMMA 
+                            {:
+                                this.parser.cadena = "expression_stmt ::= PUNTOCOMA \n"+this.parser.cadena;
+                            :};
+
+selection_stmt      ::= IF PRI expression:e PRD statement:s 
+                            {:
+                                this.parser.cadena = "selection_stmt ::= IF LCURLYB expression RCURLYB statement \n"+this.parser.cadena;
+                                
+                            :} 
+                        | IF PRI expression:e PRD statement:s1 ELSE statement:s2 
+                            {:
+                                this.parser.cadena = "selection_stmt ::= IF LCIRCLEB expression RCIRCLEB statement ELSE statement \n"+this.parser.cadena;
+                            :};
+
+iteration_stmt      ::= while_stmt:ws 
+                            {:
+                                this.parser.cadena = "iteration_stmt ::= while_stmt \n"+this.parser.cadena;
+                                RESULT=ws;
+                            :} 
+                        | for_stmt:fs 
+                            {:
+                                this.parser.cadena = "iteration_stmt ::= for_stmt \n"+this.parser.cadena;
+                                RESULT=fs;
+                            :};
+
+while_stmt          ::= WHILE PRI expression:e PRD statement:s 
+                            {:
+                                this.parser.cadena = "while_stmt ::= WHILE LCIRCLEB expression RCIRCLEB statement \n"+this.parser.cadena;
+                            :};
+
+for_stmt            ::= FOR PRI expression:e1 COMMA expression:e2 COMMA expression:e3 PRD statement:s 
+                            {:
+                                this.parser.cadena = "for_stmt ::= FOR LCIRCLEB expression SEMICOLON expression SEMICOLON expression RCIRCLEB statement \n"+this.parser.cadena;
+                            :};
+
+return_stmt         ::= RETURN PCOMMA 
+                            {:
+                                this.parser.cadena = "return ::= RETURN SEMICOLON \n"+this.parser.cadena;
+                                
+                            :}
+                        | RETURN expression:e PCOMMA 
+                            {:
+                                this.parser.cadena = "return ::= RETURN expression SEMICOLON \n"+this.parser.cadena;
+                            :};
+
+expression          ::= var:v ASIGN:a expression:e 
+                            {:
+                                this.parser.cadena = "expression ::= var ASSIGN expression \n"+this.parser.cadena;
+                            :} 
+                        | simple_expression:se 
+                            {:
+                                this.parser.cadena = "expression ::= simple_expression \n"+this.parser.cadena;
+                                RESULT=se;
+                            :};
+
+var                 ::= ID:id
+                            {:
+                                this.parser.cadena = "var ::= ID \n"+this.parser.cadena;
+                            :} 
+                        | ID:id PCI expression:e PCD
+                            {:
+                                this.parser.cadena = "var ::= ID LSQUAREB expression RSQUAREB \n"+this.parser.cadena;
+                            :};
+
+simple_expression   ::= additive_expression:ae1 relop:r additive_expression:ae2 
+                            {:
+                                this.parser.cadena = "simple_expression ::= additive_expression relop aditive_expression \n"+this.parser.cadena;
+                            :} 
+                        | additive_expression:ae 
+                            {:
+                                this.parser.cadena = "simple_expression ::= additive_expression \n"+this.parser.cadena;
+                                RESULT=ae;
+                            :};
+
+relop               ::= LEQ:me 
+                            {:
+                                this.parser.cadena = "relop ::= LEQ \n"+this.parser.cadena;
+                                RESULT=me;
+                            :}
+                        | LT:men 
+                            {:
+                                this.parser.cadena = "relop ::= LT \n"+this.parser.cadena;
+                                RESULT=men;
+                            :}
+                        | GT:ma 
+                            {:
+                                this.parser.cadena = "relop ::= GT \n"+this.parser.cadena;
+                                RESULT=ma;
+                            :}
+                        | GEQ:may 
+                            {:
+                                this.parser.cadena = "relop ::= GEQ \n"+this.parser.cadena;
+                                RESULT=may;
+                            :}
+                        | EQ:ii 
+                            {:
+                                this.parser.cadena = "relop ::= EQ \n"+this.parser.cadena;
+                                RESULT=ii;
+                            :}
+                        | NEQ:dis 
+                            {:
+                                this.parser.cadena = "relop ::= NEQ \n"+this.parser.cadena;
+                                RESULT=dis;
+                            :};
+
+additive_expression ::= additive_expression:ae addop:a term:t 
+                            {:
+                                this.parser.cadena = "additive_expression ::= additive_expression addop term \n"+this.parser.cadena;
+                            :} 
+                        | term:t 
+                            {:
+                                this.parser.cadena = "additive_expression ::= term \n"+this.parser.cadena;
+                                RESULT=t;
+                            :};
+
+addop               ::= SUMA:sum 
+                            {:
+                                this.parser.cadena = "addop ::= SUMA \n"+this.parser.cadena;
+                                RESULT=sum;
+                            :} 
+                        | RESTA:res 
+                            {:
+                                this.parser.cadena = "addop ::= RESTA \n"+this.parser.cadena;
+                                RESULT=res;
+                            :};
+
+term                ::= term:e mulop:m factor:f 
+                            {:
+                                this.parser.cadena = "term ::= term mulop factor \n"+this.parser.cadena;
+                                :}
+                        | factor:f 
+                            {:
+                                this.parser.cadena = "term ::= factor \n"+this.parser.cadena;
+                                RESULT=f;
+                            :};
+
+mulop               ::= MULT:mu 
+                            {:
+                                this.parser.cadena = "mulop ::= MULT \n"+this.parser.cadena;
+                                RESULT=mu;
+                            :} 
+                        | DIV:div 
+                            {:
+                                this.parser.cadena = "mulop ::= DIV \n"+this.parser.cadena;
+                                RESULT=div;
+                            :};
+
+factor              ::= factor:f powop:p exp:e 
+                            {:
+                                this.parser.cadena = "factor ::= factor powop exp \n"+this.parser.cadena;
+                            :}
+                        | exp:e 
+                            {:
+                                this.parser.cadena = "factor ::= exp \n"+this.parser.cadena;
+                                RESULT=e;
+                            :};
+
+powop               ::= EXP1:e1 
+                            {:
+                                this.parser.cadena = "powop ::= EXPO1 \n"+this.parser.cadena;
+                                RESULT=e1;
+                            :}
+                        | EXP2:e2 
+                            {:
+                                this.parser.cadena = "powop ::= EXPO2 \n"+this.parser.cadena;
+                                RESULT=e2;
+                            :};
+
+exp                 ::= PRI expression:e PRD 
+                            {:
+                                this.parser.cadena = "exp ::= PARENT_IZQ expression PARENT_DER \n"+this.parser.cadena;
+                                RESULT=e;
+                            :}
+                        | var:v 
+                            {:
+                                this.parser.cadena = "exp ::= var \n"+this.parser.cadena;
+                                RESULT=v;
+                            :}
+                        | call:c 
+                            {:
+                                this.parser.cadena = "exp ::= call \n"+this.parser.cadena;
+                                RESULT=c;
+                            :}
+                        | NUM:num
+                            {:
+                                this.parser.cadena = "exp ::= NUM \n"+this.parser.cadena;
+                            :};
+
+call                ::= ID:id PRI args:ar PRD 
+                            {:
+                                this.parser.cadena = "call ::= ID:id PARENT_IZQ args PARENT_DER \n"+this.parser.cadena;
+                                RESULT=ar;
+                            :};
+
+args                ::= arg_list:al 
+                            {:
+                                this.parser.cadena = "args ::= arg_list \n"+this.parser.cadena;
+                                RESULT=al;
+                            :} 
+                        | 
+                            {:
+                                this.parser.cadena = "args ::= EMPTY \n"+this.parser.cadena;
+                            :};
+
+arg_list            ::= arg_list:al COMMA expression:e 
+                            {:
+                                this.parser.cadena = "arg_list ::= arg_list COMMA expression \n"+this.parser.cadena;
+                                if(e != null){
+                                }
+                                RESULT=al;
+                            :}  	
+                        | expression:e 
+                            {:
+                                this.parser.cadena = "arg_list ::= expression \n"+this.parser.cadena;
+                            :};
