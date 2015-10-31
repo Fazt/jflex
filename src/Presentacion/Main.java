@@ -36,13 +36,12 @@ public class Main {
         for (int i = 0; i < 5; i++) {
             dir[i] = DirectorioTrabajo + "/src/analizadorlexico/Kprogram" + (i + 1) + ".ks";
         }
-        Reader reader = new BufferedReader(new FileReader(dir[0]));
+        Reader reader = new BufferedReader(new FileReader(dir[1]));
         Scanner lexer = new Scanner(reader);
-        while (lexer.next_token().sym != 0) {
-            System.out.println(lexer.yytext());
-            System.out.println(lexer.lexeme);
+        //while (lexer.next_token().sym != 0) {
+        //    System.out.println(lexer.yytext());
             
-        }
+        //}
         parser par = new parser(lexer);
         par.parse();
     }
