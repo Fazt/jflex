@@ -1,0 +1,12 @@
+program::== declaration_list
+declaration_list ::= declaration 
+declaration ::= fun_declaration 
+fun_declaration::= type_specifier ID ( params ) compound_stmt 
+ compound_stmt::= { local_declarations statement_list }   
+ EMPTY 
+  EMPTY
+params::= param_list 
+param_list::= param  
+param::= type_specifier ID [ ] 
+type_specifier::= INT 
+type_specifier::= VOID 

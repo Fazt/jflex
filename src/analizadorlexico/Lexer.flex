@@ -83,7 +83,6 @@ public String lexeme;
 "{" {return newSym( sym.LLI);}
 "}" {return newSym( sym.LLD);}
 ";" {return newSym( sym.PCOMMA);}
-"." {return newSym( sym.POINT);}
 "," {return newSym( sym.COMMA);}
 {ID} {return new Symbol( sym.ID, yyline,yycolumn,yytext());}
 {NUM} {return new Symbol( sym.NUM,yyline,yycolumn, new Integer(yytext()));}

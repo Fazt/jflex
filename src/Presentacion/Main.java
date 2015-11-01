@@ -5,19 +5,25 @@
  */
 package Presentacion;
 
+import GraphVisitor.GrapherVisitor;
 import analizadorlexico.*;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.Writer;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java_cup.runtime.Symbol;
 import parser.parser;
+
 
 /**
  *
@@ -32,17 +38,30 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException, IOException, Exception {
 
         String DirectorioTrabajo = System.getProperty("user.dir");
-        String[] dir = new String[5];
-        for (int i = 0; i < 5; i++) {
+        String[] dir = new String[6];
+        for (int i = 0; i < 6; i++) {
             dir[i] = DirectorioTrabajo + "/src/analizadorlexico/Kprogram" + (i + 1) + ".ks";
         }
-        Reader reader = new BufferedReader(new FileReader(dir[1]));
+        Reader reader = new BufferedReader(new FileReader(dir[5]));
         Scanner lexer = new Scanner(reader);
-        //while (lexer.next_token().sym != 0) {
-        //    System.out.println(lexer.yytext());
-            
-        //}
         parser par = new parser(lexer);
-        par.parse();
+        String resultado;
+        try{
+                par.parse();
+                //par.debug_parse();
+    		//Se crea la estructura visitor.
+    		GrapherVisitor vist = new GrapherVisitor();
+    		//Se obtiene el nodo raiz.
+    		par.root.recorrerArbol(vist);
+    		String cadenaGraph = vist.retornaCadenaGraph(); //Cadena que contiene el grapher.
+    		resultado = cadenaGraph;
+                System.out.println(resultado);
+        } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+        }
+        
     }
+    
+      
 }

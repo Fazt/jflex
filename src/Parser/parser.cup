@@ -7,7 +7,7 @@ import parser.sym;
 parser code
 {:
     /* AST root. */
-    public SyntaxNode root = null; //Raiz del arbol.
+    public Node root = null; //Raiz del arbol.
  	public String producciones = ""; //Concatenacion de las producciones.
 	
 	public void syntax_error(Symbol cur_token)    {
@@ -32,23 +32,21 @@ parser code
 
 /*_________________________________TERMINALES______________________________*/
 
-terminal String SUMA,RESTA,MULT,DIV,EXP1,EXP2,PCOMMA,POINT,ASIGN,PRI,PRD,PCI,PCD,LLI,LLD,COMMA,
-IF,VOID,ELSE,WHILE,FOR,RETURN,INT,empty,LT,LEQ,GT,GEQ,EQ,NEQ;
+terminal SUMA,RESTA,MULT,DIV,EXP1,EXP2,PCOMMA,ASIGN,PRI,PRD,PCI,PCD,LLI,LLD,COMMA,
+IF,VOID,ELSE,WHILE,FOR,RETURN,INT,LT,LEQ,GT,GEQ,EQ,NEQ;
 terminal Integer NUM;
 terminal String ID;
 /*_______________________________NO TERMINALES____________________________*/
 
-non terminal SyntaxNode   program,declaration_list,declaration,
-var_declaration,type_specifier,
-fun_declaration,params,param_list,
-param,compound_stmt,local_declarations,
-statement_list, statement,expression_stmt,
+non terminal Node program,declaration_list,declaration,
+var_declaration, fun_declaration,params,param_list,
+param,compound_stmt,local_declarations, statement_list, statement,expression_stmt,
 selection_stmt,iteration_stmt,while_stmt,
-for_stmt,return_stmt,
-expression,var,simple_expression,relop,
-additive_expression,addop,term,mulop,
-factor,powop,
-exp,call,args,arg_list;
+for_stmt,return_stmt,exp,call,args,arg_list,
+expression,var,simple_expression,additive_expression,term,factor;
+
+non terminal Integer type_specifier,addop,mulop,relop,powop;
+
 
 /*_______________________________PRECEDENCIAS____________________________*/
 
@@ -62,397 +60,356 @@ precedence left EXP1, EXP2;
 start with program;
 
 /*_______________________ESTRUCTURA DE PROGRAMA___________________________*/
-program ::= declaration_list:e
+program ::= declaration_list:dl
 			{:
-				this.parser.root = e;				
-				this.parser.producciones += "program::== declaration_list, empiezo aca\n";
+				this.parser.root = new Program(dl);				
+				this.parser.producciones += "program::== declaration_list\n";
                                 System.out.println(this.parser.producciones);
 			:};
 			
 declaration_list ::= declaration_list:dl declaration:d
             {:   
-            this.parser.producciones += "declaration_list::= pase por aqui  \n";
-            System.out.println(this.parser.producciones);
+            this.parser.producciones += "declaration_list::= declaration_list declaration \n";
+            RESULT = this.parser.root;
             :}
             |declaration:d
             {: 
-            this.parser.producciones += "declaration_list ::= declaration, pase por aca  \n";
-            System.out.println(this.parser.producciones);
+            this.parser.producciones += "declaration_list ::= declaration \n";
+            RESULT = d;
             :};
 declaration ::= var_declaration:vd
             {:    
-            this.parser.producciones += "declaration ::= var_declaration, por aca tambien  \n";
-            System.out.println(this.parser.producciones);
+            this.parser.producciones += "declaration ::= var_declaration\n";
+            RESULT = vd;
             :}
             |fun_declaration:fd
             {:
             this.parser.producciones += "declaration ::= fun_declaration \n";
-            System.out.println(this.parser.producciones);
-            :}
-            |error:e
-            {:
-             parser.report_error("Syntax error, stki rest", e );
-            :};
+            RESULT = fd;
+            :};      
 var_declaration::= type_specifier:ts ID:id PCOMMA 
             {:           
             this.parser.producciones += "var_declaration::= type_specifier ID ; \n";
-            System.out.println(this.parser.producciones);
+            RESULT = new var_declaration(ts,id,false,null); 
             :}
             |type_specifier:ts ID:id PCI NUM:num PCD PCOMMA 
             {:
             this.parser.producciones += "var_declaration::=type_specifier ID [ NUM ];\n";
-            System.out.println(this.parser.producciones);
+            RESULT = new var_declaration(ts,id,true,num);
             :};
 type_specifier::= INT
             {:
             this.parser.producciones += "type_specifier::= INT \n";
-            System.out.println(this.parser.producciones);
+            RESULT = sym.INT;
             :}
             | VOID
             {:
             this.parser.producciones += "type_specifier::= VOID \n";
-            System.out.println(this.parser.producciones);
+            RESULT= sym.VOID;
             :};
-fun_declaration::= type_specifier:ts ID PRI params:p PRD compound_stmt:cs
+fun_declaration::= type_specifier:ts ID:id PRI params:p PRD compound_stmt:cs
             {:      
             this.parser.producciones += "fun_declaration::= type_specifier ID ( params ) compound_stmt \n";
-            System.out.println(this.parser.producciones);
+            RESULT = new fun_declaration(ts,id,p,cs);
             :};
 params::= param_list:pl 
             {:         
             this.parser.producciones += "params::= param_list \n";
-            System.out.println(this.parser.producciones);
+            RESULT=pl;
             :}
             | VOID 
             {:
             this.parser.producciones += "params::= VOID \n";
-            System.out.println(this.parser.producciones);
+            RESULT: new Param(sym.VOID,null,false);
             :};
 param_list::= param_list:pl COMMA param:p 
             {:   
             this.parser.producciones += "param_list::= param_list , param   \n";
-            System.out.println(this.parser.producciones);
+            RESULT = p;
+            p.setHermano(pl);
             :}
             | param:p
             {:          
             this.parser.producciones += "param_list::= param  \n";
-            System.out.println(this.parser.producciones);
+            RESULT = p;
             :};
 param::= type_specifier:ts ID:id  
             {:       
             this.parser.producciones += " param::= type_specifier ID \n";
-            System.out.println(this.parser.producciones);
+            RESULT = new Param(ts,id,false);
             :}
-            | type_specifier ID PCI PCD 
+            | type_specifier:ts ID:id PCI PCD 
             {:       
             this.parser.producciones += "param::= type_specifier ID [ ] \n";
-            System.out.println(this.parser.producciones);
+            RESULT = new Param(ts,id,true);
             :};
 compound_stmt::= LLI local_declarations:ld statement_list:sl LLD 
             {:        
             this.parser.producciones += " compound_stmt::= { local_declarations statement_list }   \n";
-            System.out.println(this.parser.producciones);
+            RESULT = new compound_stmt(ld,sl);
             :};
 local_declarations::=  local_declarations:ld var_declaration:vd  
             {:         
             this.parser.producciones += "local_declarations::= local_declarations var_declaration \n";
-            System.out.println(this.parser.producciones);
+            RESULT = vd;
+            vd.setHermano(ld);
             :}
             |   
             {:
             this.parser.producciones += "  EMPTY\n";
-            System.out.println(this.parser.producciones);
+            RESULT = null;
             :};
 statement_list::= statement_list:sl statement:s 
             {:       
             this.parser.producciones += "statement_list::= statement_list statement \n";
-            System.out.println(this.parser.producciones);
+            RESULT = s;
+            s.setHermano(sl);
             :}
-            | empty 
+            |
             {:
             this.parser.producciones += " EMPTY \n";
-            System.out.println(this.parser.producciones);
+            RESULT = null; 
             :};
 statement::= expression_stmt:es     
             {:          
             this.parser.producciones += "statement::= expression_stmt  \n";
-            System.out.println(this.parser.producciones);
+            RESULT = es;
             :}
             | compound_stmt:cs
             {:   
             this.parser.producciones += "statement::= compound_stmt  \n";
-            System.out.println(this.parser.producciones);
+            RESULT = cs;
             :}
             | selection_stmt:ss
             {: 
             this.parser.producciones += "statement::= selection_stmt \n";
-            System.out.println(this.parser.producciones);
+            RESULT = ss;
             :}
             | iteration_stmt:is
             {:  
             this.parser.producciones += "statement::= iteration_stmt \n";
-            System.out.println(this.parser.producciones);
+            RESULT = is;
             :}
             | return_stmt:rs
             {: 
             this.parser.producciones += "statement::= return_stmt: \n";
-            System.out.println(this.parser.producciones);
+            RESULT = rs;
             :};
 expression_stmt::= expression:e PCOMMA  
             {:
             
             this.parser.producciones += "expression_stmt::= expression ; \n";
-            System.out.println(this.parser.producciones);
+            RESULT = e;
             :}
             | PCOMMA
             {:
-            
             this.parser.producciones += "expression_stmt::= ;  \n";
+            RESULT = new Empty_Stmt();
             :};
 selection_stmt::= IF PRI expression:e PRD statement:s  
             {:
-            
             this.parser.producciones += " selection_stmt::= IF ( expression ) statement\n";
-            System.out.println(this.parser.producciones);
+            RESULT = new selection_stmt(e,s,null,false);
             :}
             | IF PRI expression:e PRD statement:s1 ELSE statement:s2
-            {:
-            
+            {:    
             this.parser.producciones += "selection_stmt::= IF (expression) statement ELSE statement\n";
-            System.out.println(this.parser.producciones);
+            RESULT = new selection_stmt(e,s1,s2,true);
             :};
 iteration_stmt::=  while_stmt:ws 
-            {:
-            
+            {:         
             this.parser.producciones += "iteration_stmt::=  while_stmt  \n";
-            System.out.println(this.parser.producciones);
+            RESULT = ws;
             :}
             | for_stmt:fs
-            {:
-            
+            {:      
             this.parser.producciones += "iteration_stmt::= for_stmt  \n";
-            System.out.println(this.parser.producciones);
+            RESULT = fs;
             :};
 while_stmt::= WHILE PRI expression:e PRD statement:s 
-            {:
-            
+            {:  
             this.parser.producciones += "while_stmt::= WHILE ( expression) statement  \n";
-            System.out.println(this.parser.producciones);
+            RESULT = new iteration_stmt(e,s,false);
             :};
 for_stmt::=  FOR PRI expression:e1 COMMA expression:e2 COMMA expression:e3 PRD statement:s
             {:
-            
             this.parser.producciones += "for_stmt::=  FOR ( expression , expression , expression ) statement \n";
             System.out.println(this.parser.producciones);
             :};
 return_stmt::= RETURN PCOMMA 
-            {:
-            
+            {: 
             this.parser.producciones += "return_stmt::= RETURN PCOMMA   \n";
-            System.out.println(this.parser.producciones);
+            RESULT = new return_stmt(null);
             :}
             | RETURN expression:e PCOMMA 
             {:
-            
             this.parser.producciones += "return_stmt::= RETURN expression PCOMMA   \n";
-            System.out.println(this.parser.producciones);
+            RESULT = new return_stmt(e);
             :};
 expression::= var:v ASIGN expression:e 
-            {:
-            
+            {: 
             this.parser.producciones += "expression::= var ASIGN expression  \n";
-            System.out.println(this.parser.producciones);
+            RESULT = new exp_Asign(v,e,sym.ASIGN);
             :}
             | simple_expression:se
             {:
-            
             this.parser.producciones += "expression::= simple_expression  \n";
-            System.out.println(this.parser.producciones);
+            RESULT = se;
             :};
-var::= ID
+var::= ID:id
             {:
             this.parser.producciones += "var::= ID  \n";
-            System.out.println(this.parser.producciones);
+            RESULT = new Exp_Var(null,id,false);
             :}
             | ID:id PCI expression:e PCD
             {:
-            
-            this.parser.producciones += " algo \n";
-            System.out.println(this.parser.producciones);
+            this.parser.producciones += "var::= ID: [ expression ] \n";
+            RESULT = new Exp_Var(e,id,true);
             :};
 simple_expression::= additive_expression:ae1 relop:r additive_expression:ae2  
-            {:
-            
-            this.parser.producciones += " algo \n";
-            System.out.println(this.parser.producciones);
+            {:         
+            this.parser.producciones += "simple_expression::= additive_expression relop:r additive_expression \n";
+            RESULT = new ExprBynary(ae1,r,ae2);
             :}
             | additive_expression:ae
             {:
-            
-            this.parser.producciones += " algo \n";
-            System.out.println(this.parser.producciones);
+            this.parser.producciones += "simple_expression::= additive_expression\n";
+            RESULT = ae;
             :};
 relop::= LEQ   
-            {:
-            
-            this.parser.producciones += "algo  \n";
-            System.out.println(this.parser.producciones);
+            {:   
+            this.parser.producciones += "relop::= LEQ  \n";
+            RESULT = sym.LEQ;
             :}
             | LT  
-            {:
-            
-            this.parser.producciones += "algo  \n";
-            System.out.println(this.parser.producciones);
+            {:  
+            this.parser.producciones += "relop::= LT \n";
+            RESULT = sym.LT;
             :}
             | GT
-            {:
-            
-            this.parser.producciones += " algo \n";
-            System.out.println(this.parser.producciones);
+            {:    
+            this.parser.producciones += "relop::= GT\n";
+            RESULT = sym.GT;
             :}
             | GEQ
             {:
-            
-            this.parser.producciones += " algo \n";
-            System.out.println(this.parser.producciones);
+            this.parser.producciones += "relop::= GEQ\n";
+            RESULT = sym.GEQ;
             :}
             | EQ 
             {:
-            
-            this.parser.producciones += " algo \n";
-            System.out.println(this.parser.producciones);
+            this.parser.producciones += "relop::= EQ \n";
+            RESULT = sym.EQ;
             :}
             | NEQ 
-            {:
-            
-            this.parser.producciones += " algo \n";
-            System.out.println(this.parser.producciones);
+            {:    
+            this.parser.producciones += "relop::= NEQ \n";
+            RESULT = sym.NEQ;
             :};         
 additive_expression::= additive_expression:ae addop:ad term:t 
-            {:
-            
-            this.parser.producciones += "algo  \n";
-            System.out.println(this.parser.producciones);
+            {: 
+            this.parser.producciones += "additive_expression::= additive_expression addop term   \n";
+            RESULT = new ExprBynary(ae,ad,t);
             :}
             | term:t 
             {:
-            
-            this.parser.producciones += "  algo\n";
-            System.out.println(this.parser.producciones);
+            this.parser.producciones += "additive_expression::= term \n";
+            RESULT = t;
             :};
 addop::= SUMA 
             {:
-            
-            this.parser.producciones += " algo \n";
-            System.out.println(this.parser.producciones);
+            this.parser.producciones += "addop::= SUMA  \n";
+            RESULT = sym.SUMA;
             :}
             | RESTA
-            {:
-            
-            this.parser.producciones += "algo  \n";
-            System.out.println(this.parser.producciones);
+            {:  
+            this.parser.producciones += "addop::= RESTA   \n";
+            RESULT = sym.RESTA;
             :};
 term::=  term:t mulop:m factor:f 
             {:
-            
-            this.parser.producciones += "algo  \n";
-            System.out.println(this.parser.producciones);
+            this.parser.producciones += "term::=  term mulop factor  \n";
+            RESULT = new ExprBynary(t,m,f);
             :}
             | factor:f
             {:
-            
-            this.parser.producciones += " algo \n";
-            System.out.println(this.parser.producciones);
+            this.parser.producciones += "term::= factor:f \n";
+            RESULT = f;
             :};
 mulop::= MULT
-            {:
-            
-            this.parser.producciones += " algo \n";
-            System.out.println(this.parser.producciones);
+            {:  
+            this.parser.producciones += "mulop::= MULT \n";
+            RESULT = sym.MULT;
             :}
             | DIV 
-            {:
-            
-            this.parser.producciones += " algo \n";
-            System.out.println(this.parser.producciones);
+            {:     
+            this.parser.producciones += "mulop::= DIV \n";
+            RESULT = sym.DIV;
             :};
 factor::= factor:f powop:p exp:e 
-            {:
-            
-            this.parser.producciones += "  algo\n";
-            System.out.println(this.parser.producciones);
+            {:       
+            this.parser.producciones += "factor::= factor powop exp \n";
+            RESULT = e;
             :}
             | exp:e
-            {:
-            
-            this.parser.producciones += " algo \n";
-            System.out.println(this.parser.producciones);
+            {: 
+            this.parser.producciones += "factor::= exp:e\n";
+            RESULT = e;
             :};
 powop::= EXP1
             {:
-            
-            this.parser.producciones += "algo  \n";
-            System.out.println(this.parser.producciones);
+            this.parser.producciones += "powop::= EXP1  \n";
+            RESULT = sym.EXP1;
             :}
             | EXP2
             {:
-            
-            this.parser.producciones += "algo  \n";
-            System.out.println(this.parser.producciones);
+            this.parser.producciones += "powop::= EXP2  \n";
+            RESULT = sym.EXP2;
             :};
 exp::= PRI expression:e PRD 
             {:
-            
-            this.parser.producciones += " algo \n";
-            System.out.println(this.parser.producciones);
+            this.parser.producciones += " exp::= ( expression)  \n";
+            RESULT = e;
             :}
             | var:v
             {:
-            
-            this.parser.producciones += " algo \n";
-            System.out.println(this.parser.producciones);
+            this.parser.producciones += " exp::= var \n";
+            RESULT = v;
             :}
             | call:c 
             {:
-            
-            this.parser.producciones += " algo \n";
-            System.out.println(this.parser.producciones);
+            this.parser.producciones += " exp::= call \n";
+            RESULT = c;
             :}
             | NUM:n 
             {:
-            
-            this.parser.producciones += "algo  \n";
-            System.out.println(this.parser.producciones);
+            this.parser.producciones += "exp::= NUM  \n";
+            RESULT = new ExprConst(n);
             :};
                
-call::=  ID PRI args:a PRD 
+call::=  ID:id PRI args:a PRD 
             {:
-            
-            this.parser.producciones += "algo  \n";
-            System.out.println(this.parser.producciones);
-
+            this.parser.producciones += "call::=  ID ( args ) \n";
+            RESULT = new ExprFunction(id,a);
             :};
 args::=  arg_list:al 
             {:
-            
             this.parser.producciones += "algo  \n";
-            System.out.println(this.parser.producciones);
+            RESULT = al;
             :}
-            | empty 
+            |
             {:
-            
             this.parser.producciones += " algo \n";
-            System.out.println(this.parser.producciones);
+            RESULT = null;
             :};
 arg_list::= arg_list:al COMMA expression:e 
             {:
-            
             this.parser.producciones += "algo  \n";
-            System.out.println(this.parser.producciones);
+            RESULT = e;
+            e.setHermano(al);
             :}
-            | expression
+            | expression:e
             {:
-            
             this.parser.producciones += "  algo\n";
-            System.out.println(this.parser.producciones);
+            RESULT = e;
             :};

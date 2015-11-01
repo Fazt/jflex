@@ -1,17 +1,23 @@
 package ast;
 
-import java.util.LinkedList;
+import GraphVisitor.GrapherVisitor;
+import Visitor.Visitor;
 
-public class ExprConst extends SyntaxNode {
-
-	/**
-	 * Constructor del nodo que almacena una constante, aqui se guarda en la tabla de literales.
-	 * @param n
-	 */
-	public ExprConst(Integer n) {
-
-		this.children = new LinkedList<SyntaxNode>();
-		this.number = n;
+/**
+ * 
+ *	*Clase que verifica si hay una constante.
+ */
+public class ExprConst extends Node{
+	public ExprConst(Integer num) {
+		this.nNodo = GrapherVisitor.identNodo++;
+		this.setTipo("int");
+		this.setValor(num.toString());
 	}
-	
+
+	@Override
+	public void accept(Visitor visitor) {
+		// TODO Auto-generated method stub
+		visitor.visit(this);
+	}
+
 }
