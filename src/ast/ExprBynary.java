@@ -6,10 +6,6 @@ import GraphVisitor.GrapherVisitor;
 import Tablas.sym;
 import Visitor.Visitor;
 
-/**
- * @author ErnestoLuis
- *
- */
 public class ExprBynary extends Node {
 
     protected String valor2;
@@ -20,19 +16,19 @@ public class ExprBynary extends Node {
 
         switch (operador) {
             case sym.LEQ:
-                this.type = "Menor o igual";
+                this.type = "Menorigual";
                 break;
             case sym.LT:
-                this.type = "Menor que";
+                this.type = "Menor";
                 break;
             case sym.GT:
-                this.type = "Mayor que";
+                this.type = "Mayor";
                 break;
             case sym.GEQ:
-                this.type = "Mayor o igual";
+                this.type = "Mayorigual";
                 break;
             case sym.EQ:
-                this.type = "Igual igual";
+                this.type = "Igual";
                 break;
             case sym.NEQ:
                 this.type = "Distinto";
@@ -48,6 +44,12 @@ public class ExprBynary extends Node {
                 break;
             case sym.DIV:
                 this.type = "Division";
+                break;
+            case sym.EXP1:
+                this.type = "Exponente1";
+                break;
+            case sym.EXP2:
+                this.type = "Exponente2";
                 break;
             default:
                 this.type = "";

@@ -17,6 +17,19 @@ public abstract class Node {
         super();
         this.valor = "";
     }
+    //metodo encargado de recorrer el arbol
+    public void Tree(Visitor visitor) {
+        if (GrapherVisitor.VisitedNode.contains(this.iNode)) {
+            return;
+        }
+        GrapherVisitor.VisitedNode.add(this.iNode);
+        accept(visitor); //se ejecuta el metodo accept
+        for (Node nodo : childs) {
+            if (nodo != null) {
+                nodo.Tree(visitor);
+            }
+        }
+    }
 
     public int getINode() {
         return this.iNode;
@@ -56,19 +69,6 @@ public abstract class Node {
 
     public void setTipo(String tip) {
         this.type = tip;
-    }
-
-    public void recorrerArbol(Visitor visitor) {
-        if (GrapherVisitor.VisitedNode.contains(this.iNode)) {
-            return;
-        }
-        GrapherVisitor.VisitedNode.add(this.iNode);
-        accept(visitor); //se ejecuta el metodo accept
-        for (Node nodo : childs) {
-            if (nodo != null) {
-                nodo.recorrerArbol(visitor);
-            }
-        }
     }
 
     public void accept(Visitor visitor) {

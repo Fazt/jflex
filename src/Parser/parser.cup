@@ -234,7 +234,7 @@ while_stmt::= WHILE PRI expression:e PRD statement:s
 for_stmt::=  FOR PRI expression:e1 COMMA expression:e2 COMMA expression:e3 PRD statement:s
             {:
             this.parser.producciones += "for_stmt::=  FOR ( expression , expression , expression ) statement \n";
-            System.out.println(this.parser.producciones);
+            RESULT = new ForStmt(e1,e2,e3,s);
             :};
 return_stmt::= RETURN PCOMMA 
             {: 

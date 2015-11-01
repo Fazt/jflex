@@ -3,10 +3,7 @@ package ast;
 import GraphVisitor.GrapherVisitor;
 import Visitor.Visitor;
 
-/**
- * @author
- *
- */
+
 public class return_stmt extends Node {
 
     protected int tipos;

@@ -4,23 +4,20 @@ import GraphVisitor.GrapherVisitor;
 import Tablas.sym;
 import Visitor.Visitor;
 
-/**
- *
- * Clase que genera las declaraciones de parametros.
- */
+
 public class Param extends Node {
 
     protected String ident;
-    protected boolean corchetes;
+    protected boolean brackets;
     protected String valor;
     protected int tipos;
 
     public Param(int tipoEntrante, String id, boolean brack) {
         this.iNode = GrapherVisitor.nodeCount++;
-        this.corchetes = brack;
+        this.brackets = brack;
         this.tipos = tipoEntrante;
         this.ident = id;
-        if (this.corchetes == false) {
+        if (this.brackets == false) {
             if (this.tipos == sym.VOID) {
                 this.type = "void";
             } else {
@@ -49,12 +46,12 @@ public class Param extends Node {
         this.ident = ident;
     }
 
-    public boolean isCorchetes() {
-        return corchetes;
+    public boolean getBrackets() {
+        return brackets;
     }
 
-    public void setCorchetes(boolean corchetes) {
-        this.corchetes = corchetes;
+    public void setBrackets(boolean corchetes) {
+        this.brackets = corchetes;
     }
 
     public String getValor() {

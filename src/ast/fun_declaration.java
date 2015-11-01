@@ -5,10 +5,7 @@ import Visitor.Visitor;
 import Tablas.sym;
 import GraphVisitor.GrapherVisitor;
 
-/**
- * @author ErnestoLuis Metodo que se encarga de generar la funcion para cuando
- * llega.
- */
+
 public class fun_declaration extends Node {
 
     protected String ident;
@@ -19,15 +16,15 @@ public class fun_declaration extends Node {
         this.tipos = tipoLlega;
         this.ident = id;
         if (this.tipos == sym.VOID) {
-            this.type = "void"; //Asignacion de tipo void.
+            this.type = "void"; //Asignacion void.
         } else {
-            this.type = "int"; //Asignacion de tipo int.
+            this.type = "int"; //Asignacion int.
         }
         if (params != null) {
             this.childs.add(params);
             params.setPadre(this);
             while (true) {
-                if (params.getHermano() == null) { //Deja de asignar padres si no hay mas hermanos para el nodo inicial.
+                if (params.getHermano() == null) {//Si no hay mas hermanos se dejan de asignar padres
                     break;
                 }
                 this.childs.add(params.getHermano());
@@ -35,15 +32,11 @@ public class fun_declaration extends Node {
                 params = params.getHermano();
             }
         }
-        /*Ahora como se tiene en el automata otra nodo que es el de compound-stmt se re 
-         * agregaran sus childs igual y se se�alara su padre, en este caso es un solo nodo 
-         * no se recorren en sus hermanos ya que es el nodo del cuerpo de la funcion.
-         */
         this.childs.add(comp);
         if (comp != null) {
             comp.setPadre(this);
         }
-        Collections.reverse(this.childs); //Se invierte la lista para tener el orden correcto.
+        Collections.reverse(this.childs); 
 
     }
 

@@ -12,12 +12,12 @@ public class WhileStmt extends Node {
     public WhileStmt(Node exp, Node stmt) {
         this.iNode = GrapherVisitor.nodeCount++;
         this.type = "while";
-
+        
         if (exp != null) {
             this.childs.add(exp);
             exp.setPadre(this);
         }
-        if (stmt != null) {
+        if (stmt != null) {      
             this.childs.add(stmt);
             stmt.setPadre(this);
             while (true) {
@@ -29,6 +29,7 @@ public class WhileStmt extends Node {
                 stmt = stmt.getHermano();
             }
         }
+        
         Collections.reverse(this.childs);
     }
 

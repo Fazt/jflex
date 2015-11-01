@@ -4,10 +4,7 @@ import GraphVisitor.GrapherVisitor;
 import Tablas.sym;
 import Visitor.Visitor;
 
-/**
- * @author
- *
- */
+
 public class var_declaration extends Node {
 
     protected String ident = "";

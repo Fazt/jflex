@@ -11,12 +11,12 @@ import Visitor.Visitor;
  */
 public class selection_stmt extends Node {
 
-    protected boolean tieneElse;
+    protected boolean Else;
 
-    public selection_stmt(Node exp, Node stmtIf, Node stmtElse, boolean tendraElse) {
+    public selection_stmt(Node exp, Node ifStmt, Node elseStmt, boolean e) {
         this.iNode = GrapherVisitor.nodeCount++;
-        this.tieneElse = tendraElse;
-        if (tieneElse = true) {
+        this.Else = e;
+        if (Else = true) {
             this.type = "else";
         } else {
             this.type = "if";
@@ -25,31 +25,31 @@ public class selection_stmt extends Node {
             this.childs.add(exp);
             exp.setPadre(this);
         }
-        if (stmtIf != null) {
-            this.childs.add(stmtIf);
-            stmtIf.setPadre(this);
+        if (ifStmt != null) {
+            this.childs.add(ifStmt);
+            ifStmt.setPadre(this);
 
             while (true) {
-                if (stmtIf.getHermano() == null) {
+                if (ifStmt.getHermano() == null) {
                     break;
                 }
-                this.childs.add(stmtIf.getHermano());
-                stmtIf.getHermano().setPadre(this);
-                stmtIf = stmtIf.getHermano();
+                this.childs.add(ifStmt.getHermano());
+                ifStmt.getHermano().setPadre(this);
+                ifStmt = ifStmt.getHermano();
             }
         }
 
-        if (stmtElse != null) {
-            this.childs.add(stmtElse);
-            stmtElse.setPadre(this);
+        if (elseStmt != null) {
+            this.childs.add(elseStmt);
+            elseStmt.setPadre(this);
 
             while (true) {
-                if (stmtElse.getHermano() == null) {
+                if (elseStmt.getHermano() == null) {
                     break;
                 }
-                this.childs.add(stmtElse.getHermano());
-                stmtElse.getHermano().setPadre(this);
-                stmtElse = stmtElse.getHermano();
+                this.childs.add(elseStmt.getHermano());
+                elseStmt.getHermano().setPadre(this);
+                elseStmt = elseStmt.getHermano();
             }
         }
         Collections.reverse(this.childs);
@@ -61,12 +61,12 @@ public class selection_stmt extends Node {
         visitor.visit(this);
     }
 
-    public boolean isTieneElse() {
-        return tieneElse;
+    public boolean getElse() {
+        return Else;
     }
 
-    public void setTieneElse(boolean tieneElse) {
-        this.tieneElse = tieneElse;
+    public void setElse(boolean tieneElse) {
+        this.Else = tieneElse;
     }
 
 }

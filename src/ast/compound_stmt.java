@@ -5,9 +5,7 @@ import java.util.Collections;
 import GraphVisitor.GrapherVisitor;
 import Visitor.Visitor;
 
-/**
- * Clase que se encarga de generar el Compund statment.
- */
+
 public class compound_stmt extends Node {
 
     public compound_stmt(Node locDec, Node stmtList) {

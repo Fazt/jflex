@@ -38,22 +38,23 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException, IOException, Exception {
 
         String DirectorioTrabajo = System.getProperty("user.dir");
-        String[] dir = new String[6];
-        for (int i = 0; i < 6; i++) {
+        String[] dir = new String[10];
+        for (int i = 0; i < 10; i++) {
             dir[i] = DirectorioTrabajo + "/src/Programas/Kprogram" + (i + 1) + ".ks";
         }
-        Reader reader = new BufferedReader(new FileReader(dir[3]));
+        Reader reader = new BufferedReader(new FileReader(dir[6]));
         Scanner lexer = new Scanner(reader);
         parser par = new parser(lexer);
         String resultado;
         try{
                 par.parse();
-                //par.debug_parse();
+                //se uso el debuger para encontrar los errores de la gramatica
+                //par.debug_parse(); 
     		//Se crea la estructura visitor.
     		GrapherVisitor vist = new GrapherVisitor();
     		//Se obtiene el nodo raiz.
-    		par.root.recorrerArbol(vist);
-    		String cadenaGraph = vist.retornaCadenaGraph(); //Cadena que contiene el grapher.
+    		par.root.Tree(vist);
+    		String cadenaGraph = vist.returnString(); //Cadena que contiene el grapher.
     		resultado = cadenaGraph;
                 System.out.println(resultado);
         } catch (Exception e) {
