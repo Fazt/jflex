@@ -11,9 +11,9 @@ public interface Visitor {
 	public void visit(selection_stmt visitor);
 	public void visit(iteration_stmt visitor);
 	public void visit(return_stmt visitor);
-	public void visit(exp_Asign visitor);
-	public void visit(Exp_Var visitor);
+	public void visit(ExprAsign visitor);
+	public void visit(ExprVar visitor);
 	public void visit(ExprBynary visitor);
 	public void visit(ExprConst visitor);
-	public void visit(ExprFunction visitor);
+	public void visit(CallFunction visitor);
 	}

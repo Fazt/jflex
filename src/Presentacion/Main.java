@@ -40,7 +40,7 @@ public class Main {
         String DirectorioTrabajo = System.getProperty("user.dir");
         String[] dir = new String[6];
         for (int i = 0; i < 6; i++) {
-            dir[i] = DirectorioTrabajo + "/src/analizadorlexico/Kprogram" + (i + 1) + ".ks";
+            dir[i] = DirectorioTrabajo + "/src/Programas/Kprogram" + (i + 1) + ".ks";
         }
         Reader reader = new BufferedReader(new FileReader(dir[5]));
         Scanner lexer = new Scanner(reader);

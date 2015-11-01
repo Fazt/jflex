@@ -5,71 +5,72 @@ import Tablas.sym;
 import Visitor.Visitor;
 
 /**
- * 
- *	Clase que genera las declaraciones de parametros.
+ *
+ * Clase que genera las declaraciones de parametros.
  */
-public class Param extends Node{
-	protected String ident;
-	protected boolean corchetes;
-	protected String valor; 
-	protected int tipos;
+public class Param extends Node {
 
-	public Param(int tipoEntrante, String id, boolean brack){
-		this.nNodo = GrapherVisitor.identNodo++;
-		this.corchetes = brack; 
-		this.tipos = tipoEntrante;
-		this.ident = id;
-		if(this.corchetes == false){ 
-			if(this.tipos  == sym.VOID){ 
-				this.tipo = "void";
-			}else{
-				this.tipo = "int";
-			}
-		}else{
-			if(this.tipos  == sym.VOID){ 
-				this.tipo = "void[]"; 
-			}else{
-				this.tipo = "int[]";
-			}
-		}
-	}
-	
-	@Override
-	public void accept(Visitor visitor) {
-		// TODO Auto-generated method stub
-		visitor.visit(this);
-	}
+    protected String ident;
+    protected boolean corchetes;
+    protected String valor;
+    protected int tipos;
 
-	public String getIdent() {
-		return ident;
-	}
+    public Param(int tipoEntrante, String id, boolean brack) {
+        this.iNode = GrapherVisitor.nodeCount++;
+        this.corchetes = brack;
+        this.tipos = tipoEntrante;
+        this.ident = id;
+        if (this.corchetes == false) {
+            if (this.tipos == sym.VOID) {
+                this.type = "void";
+            } else {
+                this.type = "int";
+            }
+        } else {
+            if (this.tipos == sym.VOID) {
+                this.type = "void[]";
+            } else {
+                this.type = "int[]";
+            }
+        }
+    }
 
-	public void setIdent(String ident) {
-		this.ident = ident;
-	}
+    @Override
+    public void accept(Visitor visitor) {
+        // TODO Auto-generated method stub
+        visitor.visit(this);
+    }
 
-	public boolean isCorchetes() {
-		return corchetes;
-	}
+    public String getIdent() {
+        return ident;
+    }
 
-	public void setCorchetes(boolean corchetes) {
-		this.corchetes = corchetes;
-	}
+    public void setIdent(String ident) {
+        this.ident = ident;
+    }
 
-	public String getValor() {
-		return valor;
-	}
+    public boolean isCorchetes() {
+        return corchetes;
+    }
 
-	public void setValor(String valor) {
-		this.valor = valor;
-	}
+    public void setCorchetes(boolean corchetes) {
+        this.corchetes = corchetes;
+    }
 
-	public int getTipos() {
-		return tipos;
-	}
+    public String getValor() {
+        return valor;
+    }
 
-	public void setTipos(int tipos) {
-		this.tipos = tipos;
-	}
+    public void setValor(String valor) {
+        this.valor = valor;
+    }
+
+    public int getTipos() {
+        return tipos;
+    }
+
+    public void setTipos(int tipos) {
+        this.tipos = tipos;
+    }
 
 }

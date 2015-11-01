@@ -238,18 +238,18 @@ for_stmt::=  FOR PRI expression:e1 COMMA expression:e2 COMMA expression:e3 PRD s
             :};
 return_stmt::= RETURN PCOMMA 
             {: 
-            this.parser.producciones += "return_stmt::= RETURN PCOMMA   \n";
+            this.parser.producciones += "return_stmt::= RETURN;\n";
             RESULT = new return_stmt(null);
             :}
             | RETURN expression:e PCOMMA 
             {:
-            this.parser.producciones += "return_stmt::= RETURN expression PCOMMA   \n";
+            this.parser.producciones += "return_stmt::= RETURN expression;   \n";
             RESULT = new return_stmt(e);
             :};
 expression::= var:v ASIGN expression:e 
             {: 
-            this.parser.producciones += "expression::= var ASIGN expression  \n";
-            RESULT = new exp_Asign(v,e,sym.ASIGN);
+            this.parser.producciones += "expression::= var ::= expression  \n";
+            RESULT = new ExprAsign(v,e,sym.ASIGN);
             :}
             | simple_expression:se
             {:
@@ -259,12 +259,12 @@ expression::= var:v ASIGN expression:e
 var::= ID:id
             {:
             this.parser.producciones += "var::= ID  \n";
-            RESULT = new Exp_Var(null,id,false);
+            RESULT = new ExprVar(null,id,false);
             :}
             | ID:id PCI expression:e PCD
             {:
-            this.parser.producciones += "var::= ID: [ expression ] \n";
-            RESULT = new Exp_Var(e,id,true);
+            this.parser.producciones += "var::= ID [ expression ] \n";
+            RESULT = new ExprVar(e,id,true);
             :};
 simple_expression::= additive_expression:ae1 relop:r additive_expression:ae2  
             {:         
@@ -390,7 +390,7 @@ exp::= PRI expression:e PRD
 call::=  ID:id PRI args:a PRD 
             {:
             this.parser.producciones += "call::=  ID ( args ) \n";
-            RESULT = new ExprFunction(id,a);
+            RESULT = new CallFunction(id,a);
             :};
 args::=  arg_list:al 
             {:
