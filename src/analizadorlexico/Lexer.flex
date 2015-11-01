@@ -3,7 +3,7 @@ package analizadorlexico;
 import Tablas.sym;
 import java_cup.runtime.Symbol;
 %%
-%class Scanner
+%class Lexer
 %line
 %public
 %column
