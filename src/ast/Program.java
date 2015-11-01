@@ -4,27 +4,23 @@ import java.util.Collections;
 import GraphVisitor.GrapherVisitor;
 import Visitor.Visitor;
 
-/**
- * @author ErnestoLuis
- *
- */
+        /**
+	 * Constructor del raiz.
+	 * Node dl Nodo al que apunta.
+	 */
 public class Program extends Node {
-    /*Metodo que crea el primero nodo del programa y recibe una declaration_list la cual
-     * genera cada hijo para este nodo padre Program y recorre todos los hermanos del nodo que llega.
-     */
-
-    public Program(Node dl) {
-        this.iNode = GrapherVisitor.nodeCount++; //Se incrementa en uno los nodos visitados ya por el GrapherVisitor y se le asigna al numero de nodo. 
+    public Program(Node dl) {//dl viene de declaration-list
+        this.iNode = GrapherVisitor.nodeCount++; //se aumenta el contador
         if (dl != null) {
-            this.childs.add(dl);
+            this.childs.add(dl);//Se linkean padre e hijos
             dl.setPadre(this);
             while (true) {
-                if (dl.getHermano() == null) { //Deja de asignar padres si no hay mas hermanos para el nodo inicial.
+                if (dl.getHermano() == null) {
                     break;
                 }
                 this.childs.add(dl.getHermano());
                 dl.getHermano().setPadre(this);
-                dl = dl.getHermano();
+                dl = dl.getHermano();//se pasa al siguiente nodo hermano
             }
         }
         Collections.reverse(this.childs); //Se invierte la lista para tener el orden correcto.

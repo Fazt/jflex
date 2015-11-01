@@ -1,35 +1,25 @@
 package ast;
 
 import java.util.Collections;
-
 import GraphVisitor.GrapherVisitor;
 import Visitor.Visitor;
 
 /**
- *
+ *  Nodo encargado del metodo While
  */
-public class iteration_stmt extends Node {
+public class WhileStmt extends Node {
 
-    protected boolean tieneDoWhile;
-
-    public iteration_stmt(Node exp, Node stmt, boolean tendraDoWhile) {
+    public WhileStmt(Node exp, Node stmt) {
         this.iNode = GrapherVisitor.nodeCount++;
-        this.tieneDoWhile = tendraDoWhile;
-        if (this.tieneDoWhile = true) {
-            this.type = "do";
-        } else {
-            this.type = "while";
-        }
+        this.type = "while";
 
         if (exp != null) {
             this.childs.add(exp);
             exp.setPadre(this);
         }
-
         if (stmt != null) {
             this.childs.add(stmt);
             stmt.setPadre(this);
-
             while (true) {
                 if (stmt.getHermano() == null) {
                     break;
@@ -47,13 +37,4 @@ public class iteration_stmt extends Node {
         // TODO Auto-generated method stub
         visitor.visit(this);
     }
-
-    public boolean isTieneDoWhile() {
-        return tieneDoWhile;
-    }
-
-    public void setTieneDoWhile(boolean tieneDoWhile) {
-        this.tieneDoWhile = tieneDoWhile;
-    }
-
 }

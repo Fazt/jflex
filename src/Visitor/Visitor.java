@@ -9,7 +9,8 @@ public interface Visitor {
 	public void visit(compound_stmt visitor);
 	public void visit(Empty_Stmt visitor);
 	public void visit(selection_stmt visitor);
-	public void visit(iteration_stmt visitor);
+	public void visit(WhileStmt visitor);
+        public void visit(ForStmt visitor);
 	public void visit(return_stmt visitor);
 	public void visit(ExprAsign visitor);
 	public void visit(ExprVar visitor);

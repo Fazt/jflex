@@ -42,7 +42,7 @@ public class Main {
         for (int i = 0; i < 6; i++) {
             dir[i] = DirectorioTrabajo + "/src/Programas/Kprogram" + (i + 1) + ".ks";
         }
-        Reader reader = new BufferedReader(new FileReader(dir[5]));
+        Reader reader = new BufferedReader(new FileReader(dir[3]));
         Scanner lexer = new Scanner(reader);
         parser par = new parser(lexer);
         String resultado;

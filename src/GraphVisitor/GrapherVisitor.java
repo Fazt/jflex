@@ -56,7 +56,7 @@ public class GrapherVisitor implements Visitor {
 		if(nodoPadre != null){
 			this.concat += Integer.toString(nodoPadre.getINode()) + "->" + Integer.toString(visitor.getINode()) + ";\n";
 		}
-		this.member += Integer.toString(visitor.getINode()) + " [label=\"Cuerpo{}\"];\n";		
+		this.member += Integer.toString(visitor.getINode()) + " [label=\"Cuerpo()\"];\n";		
 	}
 	
 	@Override
@@ -75,22 +75,19 @@ public class GrapherVisitor implements Visitor {
 			this.concat += Integer.toString(nodoPadre.getINode()) + "->" + Integer.toString(visitor.getINode()) + ";\n";
 		}
 		if(!visitor.isTieneElse()){
-			this.member += Integer.toString(visitor.getINode()) + " [label=\"Else{}\"];\n";
+			this.member += Integer.toString(visitor.getINode()) + " [label=\"Else()\"];\n";
 		}else{
-			this.member += Integer.toString(visitor.getINode()) + " [label=\"If{}\"];\n";
+			this.member += Integer.toString(visitor.getINode()) + " [label=\"If()\"];\n";
 		}
 	}
 	/*Al igual que la sintxis if este tiene un boolean que se encarga de ver si el while tiene un do antees.*/
 	@Override
-	public void visit(iteration_stmt visitor) {
+	public void visit(WhileStmt visitor) {
 		Node nodoPadre = visitor.getPadre();
 		if(nodoPadre != null){
 			this.concat += Integer.toString(nodoPadre.getINode()) + "->" + Integer.toString(visitor.getINode()) + ";\n";
-		}
-		if(!visitor.isTieneDoWhile()){
-			this.member += Integer.toString(visitor.getINode()) + " [label=\"Do{}\"];\n";
 		}else{
-			this.member += Integer.toString(visitor.getINode()) + " [label=\"While{}\"];\n";
+			this.member += Integer.toString(visitor.getINode()) + " [label=\"While()\"];\n";
 		}
 	}
 	
@@ -209,5 +206,15 @@ public class GrapherVisitor implements Visitor {
 		cadena += "}";
 		return cadena;
 	}
+
+    @Override
+    public void visit(ForStmt visitor) {
+        Node nodoPadre = visitor.getPadre();
+		if(nodoPadre != null){
+			this.concat += Integer.toString(nodoPadre.getINode()) + "->" + Integer.toString(visitor.getINode()) + ";\n";
+		}else{
+			this.member += Integer.toString(visitor.getINode()) + " [label=\"For()\"];\n";
+		}
+    }
 
 }
