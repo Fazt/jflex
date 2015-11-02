@@ -47,17 +47,15 @@ public class Main {
             dir[i] = DirectorioTrabajo + "/src/Programas/Kprogram" + (i + 1) + ".ks";
         }
         System.out.println("Solo hay 7 programas disponibles");
-        System.out.println("Si ingresa letras o numeros fuera del rango el programa se cerrará");
-        System.out.println("Ingrese un numero del 1 al 8");
-        
+        System.out.println("Si ingresa letras el programa se cerrará");
+        System.out.println("Ingrese un numero del 1 al 7");
         Scanner entradaEscaner = new Scanner(System.in);
         int seleccion = entradaEscaner.nextInt();
-        if (seleccion > 8 || seleccion < 1) {
-            System.out.println("Error, ingrese un numero del 1 al 8");
+        while (seleccion > 7 || seleccion < 1) {
+            System.out.println("Error, ingrese un numero del 1 al 7");
             seleccion = entradaEscaner.nextInt();
         }
-        seleccion-=1;
-        Reader reader = new BufferedReader(new FileReader(dir[(seleccion)]));
+        Reader reader = new BufferedReader(new FileReader(dir[(seleccion-1)]));
         Lectura(reader);
     }
 
