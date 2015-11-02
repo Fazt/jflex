@@ -185,7 +185,7 @@ public class GrapherVisitor implements Visitor {
                 operador = "unknown";
                 break;
         }
-        this.member += Integer.toString(visitor.getINode()) + " [label=\"Operation,  " + visitor.getValor() + " " + operador + " " + "\"];\n";
+        this.member += Integer.toString(visitor.getINode()) + " [label=\"Operator,  " + visitor.getValor() + " " + operador + " " + "\"];\n";
     }
     /*Expresion constante.*/
 

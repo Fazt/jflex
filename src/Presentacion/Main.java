@@ -36,7 +36,7 @@ public class Main {
      * @throws java.io.FileNotFoundException
      */
     public static void main(String[] args) throws IOException, Exception {
-
+        
         Interfaz();
     }
 
@@ -56,10 +56,10 @@ public class Main {
             seleccion = entradaEscaner.nextInt();
         }
         Reader reader = new BufferedReader(new FileReader(dir[(seleccion-1)]));
-        Lectura(reader);
+        Lectura(reader, seleccion);
     }
 
-    public static void Lectura(Reader reader) {
+    public static void Lectura(Reader reader, int seleccion) {
 
         Lexer lexer = new Lexer(reader);
         parser par = new parser(lexer);
@@ -74,10 +74,21 @@ public class Main {
             par.root.Tree(vist);
             String cadenaGraph = vist.returnString(); //Cadena que contiene el grapher.
             resultado = cadenaGraph;
+            crearDot(cadenaGraph, seleccion);
             System.out.println(resultado);
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        }
+    }
+            public static void crearDot(String RutaDot,Integer num){
+        try {
+                File rutaResult = new File(System.getProperty("user.dir")+ "/" + "Archivo"+ num +".dot");
+                BufferedWriter wr = new BufferedWriter(new FileWriter(rutaResult));
+                wr.write(RutaDot);
+                wr.close();
+        } catch (IOException e) {
+                e.printStackTrace();
         }
     }
 }

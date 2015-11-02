@@ -1,9 +1,0 @@
-digraph g {
-3 [label="Programa{}"];
-2 [label="Funcion: void algo"];
-1 [label="Cuerpo{}"];
-0 [label="Parametro: int[]"];
-3->2;
-2->1;
-2->0;
-}
