@@ -1,0 +1,21 @@
+digraph g {
+9 [label="Program{}"];
+8 [label="Function: void algo"];
+7 [label="Body{}"];
+1 [label="Var, nono void[9]"];
+6 [label="::= 9"];
+2 [label="Exp, nono  "];
+5 [label="Operator,   + "];
+3 [label="Constant 9"];
+4 [label="Constant 58"];
+0 [label="Param: int"];
+9->8;
+8->7;
+7->1;
+7->6;
+6->2;
+6->5;
+5->3;
+5->4;
+8->0;
+}

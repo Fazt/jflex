@@ -31,7 +31,6 @@ public class ForStmt extends Node {
                 stmt = stmt.getHermano();
             }
         }
-        Collections.reverse(this.childs);
     }
     @Override
     public void accept(Visitor visitor) {

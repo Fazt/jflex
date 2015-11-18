@@ -16,7 +16,7 @@ public class selection_stmt extends Node {
     public selection_stmt(Node exp, Node ifStmt, Node elseStmt, boolean e) {
         this.iNode = GrapherVisitor.nodeCount++;
         this.Else = e;
-        if (Else = true) {
+        if (Else == true) {
             this.type = "else";
         } else {
             this.type = "if";
@@ -52,7 +52,6 @@ public class selection_stmt extends Node {
                 elseStmt = elseStmt.getHermano();
             }
         }
-        Collections.reverse(this.childs);
     }
 
     @Override

@@ -3,15 +3,18 @@ package ast;
 import java.util.LinkedList;
 import Visitor.Visitor;
 import GraphVisitor.GrapherVisitor;
-
+import Tablas.*;
 public abstract class Node {
 
+ 
     protected String type = "";
     protected String valor;
     protected int iNode = 0; //index
     protected Node padre = null;
     protected Node hermano = null;
     protected LinkedList<Node> childs = new LinkedList<>();
+    protected Kind kind;
+    protected Type Paramtype;
 
     public Node() {
         super();
@@ -82,4 +85,12 @@ public abstract class Node {
     public void setValor(String valor) {
         this.valor = valor;
     }
+       public Kind getKind() {
+        return kind;
+    }
+
+    public Type getParamtype() {
+        return Paramtype;
+    }
+
 }

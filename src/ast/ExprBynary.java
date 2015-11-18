@@ -83,7 +83,6 @@ public class ExprBynary extends Node {
                 exp2 = exp2.getHermano();
             }
         }
-        Collections.reverse(this.childs);
     }
 
     @Override

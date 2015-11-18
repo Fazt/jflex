@@ -81,8 +81,8 @@ public class GrapherVisitor implements Visitor {
         if (nodoPadre != null) {
             this.concat += Integer.toString(nodoPadre.getINode()) + "->" + Integer.toString(visitor.getINode()) + ";\n";
         }
-        if (!visitor.getElse()) {
-            this.member += Integer.toString(visitor.getINode()) + " [label=\"Else{}\"];\n";
+        if (visitor.getElse()==true) {
+            this.member += Integer.toString(visitor.getINode()) + " [label=\"If_Else{}\"];\n";
         } else {
             this.member += Integer.toString(visitor.getINode()) + " [label=\"If{}\"];\n";
         }
@@ -116,7 +116,7 @@ public class GrapherVisitor implements Visitor {
         if (visitor.getValor() == null) {
             this.member += Integer.toString(visitor.getINode()) + " [label=\"::=\"];\n";
         } else {
-            this.member += Integer.toString(visitor.getINode()) + " [label=\"::=: " + visitor.getValor() + "\"];\n";
+            this.member += Integer.toString(visitor.getINode()) + " [label=\"::= " + visitor.getValor() + "\"];\n";
         }
 
     }
@@ -185,7 +185,7 @@ public class GrapherVisitor implements Visitor {
                 operador = "unknown";
                 break;
         }
-        this.member += Integer.toString(visitor.getINode()) + " [label=\"Operator,  " + visitor.getValor() + " " + operador + " " + "\"];\n";
+        this.member += Integer.toString(visitor.getINode()) + " [label=\"Operator,  " + " " + operador + " " + "\"];\n";
     }
     /*Expresion constante.*/
 

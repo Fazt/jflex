@@ -43,19 +43,25 @@ public class Main {
     public static void Interfaz() throws FileNotFoundException {
         String DirectorioTrabajo = System.getProperty("user.dir");
         String[] dir = new String[1000];
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 10; i++) {
             dir[i] = DirectorioTrabajo + "/src/Programas/Kprogram" + (i + 1) + ".ks";
         }
+//        String programatest1 = new String();
+//        String programatest2 = new String();
+//        programatest1= DirectorioTrabajo + "/src/Programas/P1_AllSyntax.ks";
+//        programatest2= DirectorioTrabajo + "/src/Programas/P2_Prec-Asoc-Stmt.ks";
         System.out.println("Solo hay 7 programas disponibles");
         System.out.println("Si ingresa letras el programa se cerrará");
         System.out.println("Ingrese un numero del 1 al 7");
         Scanner entradaEscaner = new Scanner(System.in);
         int seleccion = entradaEscaner.nextInt();
-        while (seleccion > 7 || seleccion < 1) {
+        while (seleccion > 9 || seleccion < 1) {
             System.out.println("Error, ingrese un numero del 1 al 7");
             seleccion = entradaEscaner.nextInt();
         }
         Reader reader = new BufferedReader(new FileReader(dir[(seleccion-1)]));
+//        Reader reader = new BufferedReader(new FileReader(programatest1));
+//        int seleccion=9;
         Lectura(reader, seleccion);
     }
 
