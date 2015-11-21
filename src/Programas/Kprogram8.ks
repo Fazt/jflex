@@ -8,17 +8,19 @@ void anotherArray[234];		/# and, so is this... #/
 /#=========================#/
 /# a procedure declaration #/
 /#=========================#/
-
+int aNumber1;
 void aProcedure1 (void)
 {
+int aNumber1;
 }
+
 
 void aProcedure2 ( void)
 {
     ;
 }
 
-int aProcedure3 ( void )
+int aProcedure2 ( void )
 {
     ; ;
 }
@@ -29,7 +31,9 @@ int aProcedure3 ( void )
 
 int aProcedure4 ( int aNum1, void aNum2, int anArray1[], void anArray2[] )
 {
-    int aNum3;
+    int aNumber1;
+    int aNum1;
+    int aNum1;
     int anArray3[456];
     void aNum4;
     void anArray4[78];
@@ -76,6 +80,8 @@ int aProcedure4 ( int aNum1, void aNum2, int anArray1[], void anArray2[] )
 /#==============#/
 
 void main ( void )
-{
+{   
+    int aNumber1;
     aProcedure1 ( );
+
 }

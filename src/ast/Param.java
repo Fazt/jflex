@@ -1,8 +1,9 @@
 package ast;
 
 import GraphVisitor.GrapherVisitor;
-import Tablas.sym;
+import Tablas.*;
 import Visitor.Visitor;
+import java.util.Collections;
 
 
 public class Param extends Node {
@@ -13,6 +14,7 @@ public class Param extends Node {
     protected int tipos;
 
     public Param(int tipoEntrante, String id, boolean brack) {
+        this.kind= Kind.Param;
         this.iNode = GrapherVisitor.nodeCount++;
         this.brackets = brack;
         this.tipos = tipoEntrante;

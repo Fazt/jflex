@@ -2,6 +2,7 @@ package ast;
 
 import java.util.Collections;
 import GraphVisitor.GrapherVisitor;
+import Tablas.Kind;
 import Visitor.Visitor;
 
 //Nodo que se encarga de los llamados a expresiones de variables
@@ -11,7 +12,8 @@ public class ExprVar extends Node {
     protected String ident;
 
     public ExprVar(Node exp, String id, boolean args) {
-
+        
+        this.kind= Kind.ExprVar;
         this.argumento = args; //detecta si el llamado a la funcion fue con o sin argumentos entre los parentesis cuadrados
         this.iNode = GrapherVisitor.nodeCount++;
         this.ident = id;
@@ -34,7 +36,6 @@ public class ExprVar extends Node {
                 exp = exp.getHermano();
             }
         }
-        Collections.reverse(this.childs);
     }
 
     @Override

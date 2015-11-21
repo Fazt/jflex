@@ -10,5 +10,5 @@ package Tablas;
  * @author Spartan
  */
 public enum Type {
-	Int, Void
+	Int, Void,IntArray
 }

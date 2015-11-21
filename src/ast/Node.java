@@ -1,5 +1,6 @@
 package ast;
 
+import AnalisisSemantico.ScopeVisitor;
 import java.util.LinkedList;
 import Visitor.Visitor;
 import GraphVisitor.GrapherVisitor;
@@ -14,14 +15,14 @@ public abstract class Node {
     protected Node hermano = null;
     protected LinkedList<Node> childs = new LinkedList<>();
     protected Kind kind;
-    protected Type Paramtype;
+    public int fila;
 
     public Node() {
         super();
         this.valor = "";
     }
     //metodo encargado de recorrer el arbol
-    public void Tree(Visitor visitor) {
+    public void GrapherTree(Visitor visitor) {
         if (GrapherVisitor.VisitedNode.contains(this.iNode)) {
             return;
         }
@@ -29,7 +30,20 @@ public abstract class Node {
         accept(visitor); //se ejecuta el metodo accept
         for (Node nodo : childs) {
             if (nodo != null) {
-                nodo.Tree(visitor);
+                nodo.GrapherTree(visitor);
+            }
+        }
+    }
+    
+    public void ScopeTree(Visitor visitor) {
+        if (ScopeVisitor.VisitedNode.contains(this.iNode)) {
+            return;
+        }
+        ScopeVisitor.VisitedNode.add(this.iNode);
+        accept(visitor); //se ejecuta el metodo accept
+        for (Node nodo : childs) {
+            if (nodo != null) {
+                nodo.ScopeTree(visitor);
             }
         }
     }
@@ -85,12 +99,13 @@ public abstract class Node {
     public void setValor(String valor) {
         this.valor = valor;
     }
+    
+        public void setKind(Kind kind) {
+        this.kind = kind;
+    }
        public Kind getKind() {
         return kind;
     }
 
-    public Type getParamtype() {
-        return Paramtype;
-    }
 
 }

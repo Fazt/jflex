@@ -7,100 +7,113 @@ package AnalisisSemantico;
 
 import Tablas.*;
 import ast.Node;
-import AnalisisSemantico.Alcance;
+import AnalisisSemantico.Scope;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  *
- * @author Spartan
+ * @author Spartan Clase que se encarga de almacenar los simbolos encontrados en
+ * los distintos alcances (scopes) del arbol construido en la etapa de sintaxis.
  */
 public class SymTab {
 
-    Kind kind;
-    int size;
-    Alcance head;
-    SymTab next;
-    Alcance alcance = null;
+    public static final int PREDEFINED_SCOPE = 0, CLASS_SCOPE = 1, MEMBER_SCOPE = 2, PARAMETER_SCOPE = 3,
+            LOCAL_SCOPE = 4, INVALID_SCOPE = -1;
 
-    public SymTab(Kind kind, int size, Alcance head, SymTab next) {
-        this.kind = kind;
-        this.size = size;
-        this.head = head;
-        this.next = next;
+    /**
+     * Lista que almacena los distintos alcances encontrados al reviasarl el
+     * codigo. Guarda un objeto de tipo Declaration(declaracion) y un String
+     * referido al Nombre del nodo.
+     */
+    public SymTab st;
+    List<HashMap<String, Declaration>> scopes = new ArrayList<HashMap<String, Declaration>>();
+    int scopeNumber = 0;
+
+    public SymTab() {
+        st = this;
+        newScope();//se crea un alcance equivalente al alcance predefinido.
     }
 
-    public void create_symtab(Node node) {
-        Fun_info funinfo = null;
-        Type tipo = null;
-        while (node != null) {
-            switch (node.getKind()) {
-                case var_declaration:
-                    break;
-                case fun_declaration:
-                    break;
-                case Param:
-                    break;
-                case compound_stmt:
-                    //Se crea un nuevo alcance
-                    break;
-                case Empty_Stmt:
-                    break;
-                case selection_stmt:
-                    // se crea un nuevo alcance
-                    break;
-                case WhileStmt:
-                    //se crea un nuevo alcance
-                    break;
-                case ForStmt:
-                    //se crea un nuevo alcance
-                    break;
-                case return_stmt:
-                    break;
-                case ExprAsign:
-                    break;
-                case ExprVar:
-                    break;
-                case ExprBynary:
-                    break;
-                case ExprConst:
-                    break;
-                case CallFunction:
-                    break;
-                default:
-                    break;
+    public void newScope() {
+
+        scopes.add(new HashMap<String, Declaration>());//se añade un nuevo alcance a la lista
+    }
+
+    public int getScope(String name) {
+        for (int i = scopes.size() - 1; i >= 0; i--) {
+            if (scopes.get(i).containsKey(name)) {
+                return i;
             }
         }
+        return 0;
     }
 
-    public void setKind(Kind kind) {
-        this.kind = kind;
+    public void closeScope() {
+        if (scopes.size() <= 1) {
+            throw new RuntimeException("SymTab.closeScope() sobrepaso el limite de llamados!");
+        }
+        scopes.remove(scopes.size() - 1);
     }
 
-    public void setSize(int size) {
-        this.size = size;
+    /**
+     * Establece la declaracion donde fue realizada un identificador
+     *
+     * @param declaration
+     */
+    public void set(Declaration declaration) {
+        String name = declaration.id;
+        //Un identificador no puede ser redeclarado en alcances mas profundos
+        for (int i = PARAMETER_SCOPE; i < scopes.size(); i++) {
+            Declaration decl = scopes.get(i).get(name);
+            if (decl != null) {
+                System.out.println("Error Semantico en fila "+declaration.fila+ ", "+name + " ya fue delclarada en fila " + decl.fila);
+              return;
+            }
+        }
+        // Redeclarar en el mismo alcance tampoco esta permitido
+        HashMap<String, Declaration> scope = scopes.get(scopes.size() - 1);
+        Declaration decl = scope.get(name);
+        if (decl != null) {
+            System.out.println("Error Semantico en fila "+declaration.fila+ ", "+name + " ya fue delclarada en fila " + decl.fila);
+            return;
+        }
+        // De otra forma, se añade a la lista
+        scope.put(name, declaration);
     }
 
-    public void setHead(Alcance head) {
-        this.head = head;
+    public int linkDeclaration(String id) {
+        Declaration decl;
+        for (int i = scopes.size() - 1; i >= 0; i--) {
+            decl = scopes.get(i).get(id);
+            if (decl != null) {
+                id = decl.id;
+                if (i >= LOCAL_SCOPE) {
+                    return LOCAL_SCOPE;
+                }
+                return i;
+            }
+        }
+        return INVALID_SCOPE;
     }
 
-    public void setNext(SymTab next) {
-        this.next = next;
-    }
+    public void display() {
+        Iterator<HashMap<String, Declaration>> it = scopes.iterator();
+        String padding = "";
 
-    public Kind getKind() {
-        return kind;
-    }
+        while (it.hasNext()) {
+            HashMap<String, Declaration> scope = it.next();
 
-    public int getSize() {
-        return size;
-    }
+            Iterator<String> its = scope.keySet().iterator();
+            while (its.hasNext()) {
+                String id = its.next();
+                System.out.println(padding + "\"" + id + "\"" + ": " + scope.get(id));
+            }
 
-    public Alcance getHead() {
-        return head;
-    }
-
-    public SymTab getNext() {
-        return next;
+            padding = padding + "  ";
+        }
     }
 
 }

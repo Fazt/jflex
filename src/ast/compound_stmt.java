@@ -3,12 +3,14 @@ package ast;
 import java.util.Collections;
 
 import GraphVisitor.GrapherVisitor;
+import Tablas.Kind;
 import Visitor.Visitor;
 
 
 public class compound_stmt extends Node {
 
     public compound_stmt(Node locDec, Node stmtList) {
+        this.kind= Kind.compound_stmt;
         this.iNode = GrapherVisitor.nodeCount++;
 
         if (stmtList != null) {

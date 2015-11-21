@@ -2,6 +2,7 @@ package ast;
 
 import java.util.Collections;
 import GraphVisitor.GrapherVisitor;
+import Tablas.Kind;
 import Visitor.Visitor;
 
 /**
@@ -10,6 +11,7 @@ import Visitor.Visitor;
 public class WhileStmt extends Node {
 
     public WhileStmt(Node exp, Node stmt) {
+        this.kind= Kind.WhileStmt;
         this.iNode = GrapherVisitor.nodeCount++;
         this.type = "while";
         
@@ -29,8 +31,6 @@ public class WhileStmt extends Node {
                 stmt = stmt.getHermano();
             }
         }
-        
-        Collections.reverse(this.childs);
     }
 
     @Override

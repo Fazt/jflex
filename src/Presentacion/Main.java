@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java_cup.runtime.Symbol;
 import parser.parser;
+import AnalisisSemantico.*;
 
 /**
  *
@@ -75,15 +76,20 @@ public class Main {
             //se uso el debuger para encontrar los errores de la gramatica
             //par.debug_parse(); 
             //Se crea la estructura visitor.
-            GrapherVisitor vist = new GrapherVisitor();
-            //Se obtiene el nodo raiz.
-            par.root.Tree(vist);
-            String cadenaGraph = vist.returnString(); //Cadena que contiene el grapher.
+            GrapherVisitor visit = new GrapherVisitor();
+            ScopeVisitor sVisit = new ScopeVisitor();
+            TypeCheckVisitor tcVisit = new TypeCheckVisitor();
+            //Se recorre el arbol para el analisis sintactico
+            par.root.GrapherTree(visit);
+            //primera pasada analisis semantico (analisis de alcance)
+            par.root.ScopeTree(sVisit);
+            //segunda pasada analisis semantico (typeCheck)
+            //par.root.GrapherTree(tcVisit);
+            String cadenaGraph = visit.returnString(); //Cadena que contiene el grapher.
             resultado = cadenaGraph;
             crearDot(cadenaGraph, seleccion);
             System.out.println(resultado);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

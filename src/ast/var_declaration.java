@@ -1,6 +1,7 @@
 package ast;
 
 import GraphVisitor.GrapherVisitor;
+import Tablas.Kind;
 import Tablas.sym;
 import Visitor.Visitor;
 
@@ -12,6 +13,7 @@ public class var_declaration extends Node {
     protected String valor = "";
 
     public var_declaration(int tipoEntrante, String id, boolean brack, Integer num) {
+        this.kind= Kind.var_declaration;
         this.iNode = GrapherVisitor.nodeCount++;
         this.corchetes = brack;
         this.ident = id;
@@ -24,9 +26,9 @@ public class var_declaration extends Node {
         } else {
             this.setValor(num.toString());
             if (tipoEntrante == sym.VOID) {
-                this.setTipo("void[" + this.getValor() + "]");
+                this.setTipo("voidArray");
             } else {
-                this.setTipo("int[" + this.getValor() + "]");
+                this.setTipo("intArray");
             }
         }
     }

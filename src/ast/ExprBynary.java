@@ -3,6 +3,7 @@ package ast;
 import java.util.Collections;
 
 import GraphVisitor.GrapherVisitor;
+import Tablas.Kind;
 import Tablas.sym;
 import Visitor.Visitor;
 
@@ -12,6 +13,7 @@ public class ExprBynary extends Node {
 
     //Nodo encargado de trabajar con las expresiones que tienen 2 operadores
     public ExprBynary(Node exp1, int operador, Node exp2) {
+        this.kind= Kind.ExprBynary;
         this.iNode = GrapherVisitor.nodeCount++;
 
         switch (operador) {

@@ -3,6 +3,7 @@ package ast;
 import java.util.Collections;
 
 import GraphVisitor.GrapherVisitor;
+import Tablas.Kind;
 import Visitor.Visitor;
 
 /**
@@ -14,6 +15,7 @@ public class selection_stmt extends Node {
     protected boolean Else;
 
     public selection_stmt(Node exp, Node ifStmt, Node elseStmt, boolean e) {
+        this.kind= Kind.selection_stmt;
         this.iNode = GrapherVisitor.nodeCount++;
         this.Else = e;
         if (Else == true) {

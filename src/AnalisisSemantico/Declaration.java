@@ -5,10 +5,18 @@
  */
 package AnalisisSemantico;
 
+import ast.Node;
+
 /**
  *
  * @author Spartan
  */
-class Fun_info {
-    
+public class Declaration extends Node {
+
+    public String id;
+    public String type;
+
+    public Declaration() {
+    }
+
 }

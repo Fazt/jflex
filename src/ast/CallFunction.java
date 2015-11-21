@@ -3,6 +3,7 @@ package ast;
 import java.util.Collections;
 
 import GraphVisitor.GrapherVisitor;
+import Tablas.Kind;
 import Visitor.Visitor;
 
 //Nodo que controla los llamados  
@@ -11,6 +12,7 @@ public class CallFunction extends Node {
     protected String id;
 
     public CallFunction(String id, Node arg) {
+        this.kind= Kind.CallFunction;
         this.iNode = GrapherVisitor.nodeCount++;
         this.type = "Identifier";
         this.id = id;
@@ -28,7 +30,6 @@ public class CallFunction extends Node {
                 arg = arg.getHermano();
             }
         }
-        Collections.reverse(this.childs);
     }
 
     @Override

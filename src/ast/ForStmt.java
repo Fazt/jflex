@@ -2,12 +2,14 @@ package ast;
 
 import java.util.Collections;
 import GraphVisitor.GrapherVisitor;
+import Tablas.Kind;
 import Visitor.Visitor;
 
 
 public class ForStmt extends Node {
 
     public ForStmt(Node exp1, Node exp2, Node exp3, Node stmt) {
+        this.kind= Kind.ForStmt;
         this.iNode = GrapherVisitor.nodeCount++;
         this.type = "for";
         

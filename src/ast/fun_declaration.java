@@ -4,6 +4,7 @@ import java.util.Collections;
 import Visitor.Visitor;
 import Tablas.sym;
 import GraphVisitor.GrapherVisitor;
+import Tablas.Kind;
 
 
 public class fun_declaration extends Node {
@@ -12,6 +13,7 @@ public class fun_declaration extends Node {
     protected int tipos;
 
     public fun_declaration(int tipoLlega, String id, Node params, Node comp) {
+        this.kind= Kind.fun_declaration;
         this.iNode = GrapherVisitor.nodeCount++;
         this.tipos = tipoLlega;
         this.ident = id;
@@ -25,6 +27,7 @@ public class fun_declaration extends Node {
             params.setPadre(this);
             while (true) {
                 if (params.getHermano() == null) {//Si no hay mas hermanos se dejan de asignar padres
+                    Collections.reverse(this.childs); 
                     break;
                 }
                 this.childs.add(params.getHermano());
@@ -36,7 +39,6 @@ public class fun_declaration extends Node {
         if (comp != null) {
             comp.setPadre(this);
         }
-        Collections.reverse(this.childs); 
 
     }
 

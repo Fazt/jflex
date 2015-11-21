@@ -2,6 +2,7 @@ package ast;
 
 import java.util.Collections;
 import GraphVisitor.GrapherVisitor;
+import Tablas.Kind;
 import Visitor.Visitor;
 
         /**

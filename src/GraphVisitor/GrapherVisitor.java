@@ -18,6 +18,7 @@ public class GrapherVisitor implements Visitor {
 
     @Override
     public void visit(Program visitor) {
+        System.out.println("Soy un Program");
         Node nodoPadre = visitor.getPadre();
         if (nodoPadre != null) {
             this.concat += Integer.toString(nodoPadre.getINode()) + "->" + Integer.toString(visitor.getINode()) + ";\n";
@@ -27,6 +28,7 @@ public class GrapherVisitor implements Visitor {
 
     @Override
     public void visit(var_declaration visitor) {
+        System.out.println("Soy un var_declaration "+visitor.getIdent());
         Node nodoPadre = visitor.getPadre();
         if (nodoPadre != null) {
             this.concat += Integer.toString(nodoPadre.getINode()) + "->" + Integer.toString(visitor.getINode()) + ";\n";
@@ -36,6 +38,7 @@ public class GrapherVisitor implements Visitor {
 
     @Override
     public void visit(fun_declaration visitor) {
+        System.out.println("Soy un fun_declaration "+visitor.getIdent());
         Node nodoPadre = visitor.getPadre();
         if (nodoPadre != null) {
             this.concat += Integer.toString(nodoPadre.getINode()) + "->" + Integer.toString(visitor.getINode()) + ";\n";
@@ -45,6 +48,7 @@ public class GrapherVisitor implements Visitor {
 
     //Este metodo tiene 2 tipos distintos uno de arreglo. (el que tiene el corchete).
     public void visit(Param visitor) {
+        System.out.println("Soy un Param "+visitor.getIdent());
         Node nodoPadre = visitor.getPadre();
         if (nodoPadre != null) {
             this.concat += Integer.toString(nodoPadre.getINode()) + "->" + Integer.toString(visitor.getINode()) + ";\n";
@@ -58,15 +62,17 @@ public class GrapherVisitor implements Visitor {
 
     @Override
     public void visit(compound_stmt visitor) {
+        System.out.println("Soy un compound_stmt");
         Node nodoPadre = visitor.getPadre();
         if (nodoPadre != null) {
             this.concat += Integer.toString(nodoPadre.getINode()) + "->" + Integer.toString(visitor.getINode()) + ";\n";
         }
-        this.member += Integer.toString(visitor.getINode()) + " [label=\"Body{}\"];\n";
+        this.member += Integer.toString(visitor.getINode()) + " [label=\"compound_stmt{}\"];\n";
     }
 
     @Override
     public void visit(Empty_Stmt visitor) {
+        System.out.println("Soy un Empty_Stmt");
         Node nodoPadre = visitor.getPadre();
         if (nodoPadre != null) {
             this.concat += Integer.toString(nodoPadre.getINode()) + "->" + Integer.toString(visitor.getINode()) + ";\n";
@@ -77,6 +83,7 @@ public class GrapherVisitor implements Visitor {
 
     @Override
     public void visit(selection_stmt visitor) {
+        System.out.println("Soy un selection_stmt");
         Node nodoPadre = visitor.getPadre();
         if (nodoPadre != null) {
             this.concat += Integer.toString(nodoPadre.getINode()) + "->" + Integer.toString(visitor.getINode()) + ";\n";
@@ -91,6 +98,7 @@ public class GrapherVisitor implements Visitor {
 
     @Override
     public void visit(WhileStmt visitor) {
+        System.out.println("Soy un WhileStmt");
         Node nodoPadre = visitor.getPadre();
         if (nodoPadre != null) {
             this.concat += Integer.toString(nodoPadre.getINode()) + "->" + Integer.toString(visitor.getINode()) + ";\n";
@@ -100,6 +108,7 @@ public class GrapherVisitor implements Visitor {
 
     @Override
     public void visit(return_stmt visitor) {
+        System.out.println("Soy un return_stmt");
         Node nodoPadre = visitor.getPadre();
         if (nodoPadre != null) {
             this.concat += Integer.toString(nodoPadre.getINode()) + "->" + Integer.toString(visitor.getINode()) + ";\n";
@@ -109,21 +118,19 @@ public class GrapherVisitor implements Visitor {
 
     @Override
     public void visit(ExprAsign visitor) {
+        System.out.println("Soy un ExprAsign");
         Node nodoPadre = visitor.getPadre();
         if (nodoPadre != null) {
             this.concat += Integer.toString(nodoPadre.getINode()) + "->" + Integer.toString(visitor.getINode()) + ";\n";
         }
-        if (visitor.getValor() == null) {
             this.member += Integer.toString(visitor.getINode()) + " [label=\"::=\"];\n";
-        } else {
-            this.member += Integer.toString(visitor.getINode()) + " [label=\"::= " + visitor.getValor() + "\"];\n";
         }
-
-    }
+    
     /*Expresiones compuestas y normales.*/
 
     @Override
     public void visit(ExprVar visitor) {
+        System.out.println("Soy un ExprVar");
         Node nodoPadre = visitor.getPadre();
         if (nodoPadre != null) {
             this.concat += Integer.toString(nodoPadre.getINode()) + "->" + Integer.toString(visitor.getINode()) + ";\n";
@@ -139,6 +146,7 @@ public class GrapherVisitor implements Visitor {
 
     @Override
     public void visit(ExprBynary visitor) {
+        System.out.println("Soy un ExprBynary");
         Node nodoPadre = visitor.getPadre();
         if (nodoPadre != null) {
             this.concat += Integer.toString(nodoPadre.getINode()) + "->" + Integer.toString(visitor.getINode()) + ";\n";
@@ -191,6 +199,7 @@ public class GrapherVisitor implements Visitor {
 
     @Override
     public void visit(ExprConst visitor) {
+        System.out.println("Soy un ExprConst");
         Node nodoPadre = visitor.getPadre();
         if (nodoPadre != null) {
             this.concat += Integer.toString(nodoPadre.getINode()) + "->" + Integer.toString(visitor.getINode()) + ";\n";
@@ -200,6 +209,7 @@ public class GrapherVisitor implements Visitor {
 
     @Override
     public void visit(CallFunction visitor) {
+        System.out.println("Soy un CallFunction");
         Node nodoPadre = visitor.getPadre();
         if (nodoPadre != null) {
             this.concat += Integer.toString(nodoPadre.getINode()) + "->" + Integer.toString(visitor.getINode()) + ";\n";
@@ -213,6 +223,7 @@ public class GrapherVisitor implements Visitor {
 
     @Override
     public void visit(ForStmt visitor) {
+        System.out.println("Soy un ForStmt");
         Node nodoPadre = visitor.getPadre();
         if (nodoPadre != null) {
             this.concat += Integer.toString(nodoPadre.getINode()) + "->" + Integer.toString(visitor.getINode()) + ";\n";
