@@ -67,7 +67,6 @@ public class Main {
     }
 
     public static void Lectura(Reader reader, int seleccion) {
-
         Lexer lexer = new Lexer(reader);
         parser par = new parser(lexer);
         String resultado;
@@ -85,10 +84,10 @@ public class Main {
             par.root.ScopeTree(sVisit);
             //segunda pasada analisis semantico (typeCheck)
             //par.root.GrapherTree(tcVisit);
-            String cadenaGraph = visit.returnString(); //Cadena que contiene el grapher.
-            resultado = cadenaGraph;
-            crearDot(cadenaGraph, seleccion);
-            System.out.println(resultado);
+////            String cadenaGraph = visit.returnString(); //Cadena que contiene el grapher.
+////            resultado = cadenaGraph;
+////            crearDot(cadenaGraph, seleccion);
+////            System.out.println(resultado);
         } catch (Exception e) {
             e.printStackTrace();
         }

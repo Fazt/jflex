@@ -104,7 +104,7 @@ public abstract class Node {
         this.kind = kind;
     }
        public Kind getKind() {
-        return kind;
+        return this.kind;
     }
 
 

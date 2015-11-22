@@ -57,12 +57,20 @@ public class ScopeVisitor implements Visitor{
     @Override
     public void visit(fun_declaration visitor) {
 //        System.out.println("Semantica de fun_declaration");
+        FunctionDeclaration fd = new FunctionDeclaration();
+        fd.id=visitor.getIdent();
+        fd.params=visitor.getChilds();
+        while(st.scopes.size()>SymTab.FUNCTION_SCOPE){
+            st.closeScope();
+        }
         Declaration dec = new Declaration();
         dec.id=visitor.getIdent();
         dec.type = visitor.getTipo();
         dec.fila = visitor.fila;
+        dec.setKind(visitor.getKind());
         st.newScope();//Se aumenta al alcance referente a las funciones
         st.set(dec);
+        st.FunctionList.add(fd);
     }
 
     @Override
@@ -72,38 +80,43 @@ public class ScopeVisitor implements Visitor{
         dec.id=visitor.getIdent();
         dec.type = visitor.getTipo();
         dec.fila = visitor.fila;
-        st.newScope();//Se aumenta al alcance referido a los parametros
         st.set(dec);
     }
 
     @Override
     public void visit(compound_stmt visitor) {
      //   System.out.println("Semantica de compound_stmt");
-      st.newScope();// Alcance referido a variables locales
+        st.newScope();
+        
     }
 
     @Override
     public void visit(Empty_Stmt visitor) {
       //  System.out.println("Semantica de Empty_Stmt");
+        st.closeScope();
     }
 
     @Override
     public void visit(selection_stmt visitor) {
      //   System.out.println("Semantica de selection_stmt");
+      st.newScope();// Alcance referido a variables locales
     }
 
     @Override
     public void visit(WhileStmt visitor) {
      //   System.out.println("Semantica de WhileStmt");
+      st.newScope();// Alcance referido a variables locales
     }
 
     @Override
     public void visit(ForStmt visitor) {
      //  System.out.println("Semantica de ForStmt");
+      st.newScope();// Alcance referido a variables locales
     }
 
     @Override
     public void visit(return_stmt visitor) {
+        st.closeScope();
      //   System.out.println("Semantica de return_stmt");
     }
 
@@ -115,6 +128,13 @@ public class ScopeVisitor implements Visitor{
     @Override
     public void visit(ExprVar visitor) {
      //   System.out.println("Semantica de ExprVar");
+        Declaration decl = new  Declaration();
+        decl.id=visitor.getIdent();
+        decl.fila= visitor.fila;
+        int scope= st.searchDeclaration(decl.id);
+        if (scope== SymTab.INVALID_SCOPE){
+            System.out.println("Error Semantico en fila "+decl.fila+", la variable "+ decl.id+" no ha sido declarada");
+        }
     }
 
     @Override

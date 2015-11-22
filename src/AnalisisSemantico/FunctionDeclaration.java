@@ -5,26 +5,16 @@
  */
 package AnalisisSemantico;
 
+import ast.Node;
 import java.util.List;
 
 /**
  *
  * @author Spartan
  */
-class Scope {
+class FunctionDeclaration extends Node{
     
-    int scopeNumber;
-    List<Declaration> decl;
+    public String id;
+    public List<Node> params;
     
-    void Scope(){
-        this.scopeNumber=0;
-    }
-    Scope createScope(Declaration dl){
-        
-        this.scopeNumber ++;
-        decl.add(dl);
-        
-        return this;
-    }
-    void insert_alcance(){}
 }
