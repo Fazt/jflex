@@ -8,7 +8,7 @@ import java.util.Collections;
 
 public class Param extends Node {
 
-    protected String ident;
+    
     protected boolean brackets;
     protected String valor;
     protected int tipos;

@@ -1,13 +1,14 @@
 package ast;
 
 import AnalisisSemantico.ScopeVisitor;
+import AnalisisSemantico.TypeCheckVisitor;
 import java.util.LinkedList;
 import Visitor.Visitor;
 import GraphVisitor.GrapherVisitor;
 import Tablas.*;
 public abstract class Node {
 
- 
+    protected String ident;
     protected String type = "";
     protected String valor;
     protected int iNode = 0; //index
@@ -47,6 +48,19 @@ public abstract class Node {
             }
         }
     }
+    
+    public void TypeTree(Visitor visitor) {
+        if (TypeCheckVisitor.VisitedNode.contains(this.iNode)) {
+            return;
+        }
+        TypeCheckVisitor.VisitedNode.add(this.iNode);
+        accept(visitor); //se ejecuta el metodo accept
+        for (Node nodo : childs) {
+            if (nodo != null) {
+                nodo.TypeTree(visitor);
+            }
+        }
+    }
 
     public int getINode() {
         return this.iNode;
@@ -66,6 +80,10 @@ public abstract class Node {
 
     public String getTipo() {
         return this.type;
+    }
+
+    public String getIdent() {
+        return ident;
     }
 
     public void setNodo(int nodoN) {

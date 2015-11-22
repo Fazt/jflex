@@ -6,6 +6,8 @@
 package AnalisisSemantico;
 
 import ast.Node;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  *
@@ -15,6 +17,7 @@ public class Declaration extends Node {
 
     public String id;
     public String type;
+    public LinkedList<Node> params;
 
     public Declaration() {
     }

@@ -14,6 +14,7 @@ import ast.ExprBynary;
 import ast.ExprConst;
 import ast.ExprVar;
 import ast.ForStmt;
+import ast.Node;
 import ast.Param;
 import ast.Program;
 import ast.WhileStmt;
@@ -23,6 +24,7 @@ import ast.return_stmt;
 import ast.selection_stmt;
 import ast.var_declaration;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  *
@@ -68,6 +70,7 @@ public class ScopeVisitor implements Visitor{
         dec.type = visitor.getTipo();
         dec.fila = visitor.fila;
         dec.setKind(visitor.getKind());
+        dec.params=fd.params;
         st.newScope();//Se aumenta al alcance referente a las funciones
         st.set(dec);
         st.FunctionList.add(fd);

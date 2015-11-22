@@ -54,20 +54,38 @@ public class SymTab {
 //    }
     public void closeScope() {
         if (scopes.size() <= 1) {
+            //Esto no deberia ocurrir nunca
+            throw new RuntimeException("SymTab.closeScope() sobrepaso el limite de llamados!");
+        }
+        scopes.remove(scopes.size() - 1);
+    }
+    
+    public void closeScope(int algo, String cosa) {
+        if (scopes.size() <= 1) {       
+            throw new RuntimeException("SymTab.closeScope() sobrepaso el limite de llamados!");
+        }
+        scopes.remove(scopes.size() - 1);
+    }
+    
+    public void closeScope(String cosa, int algo) {
+        if (scopes.size() <= 1) {
             throw new RuntimeException("SymTab.closeScope() sobrepaso el limite de llamados!");
         }
         scopes.remove(scopes.size() - 1);
     }
 
-    public boolean searchFunction(FunctionDeclaration fd) {
+    public boolean searchFunction(Declaration d) {
 
         for (int i = 0; i < FunctionList.size(); i++) {
-//            if (fd.id.equals(FunctionList.get(i).id)) {
-//                if (fd.params.equals(FunctionList.get(i).params)) {
-                    System.out.println("Funcion ya guardada");
-                    return false;
-//                }
-//            }
+            if (d.id.equals(FunctionList.get(i).id)) {
+                if (FunctionList.get(i).params.size() == d.params.size()) {
+                    for (int j = 0; j < (d.params.size() - 1); j++) {
+                        if (FunctionList.get(i).params.get(j).getIdent().equals(d.params.get(j).getIdent())) {
+                            return false;
+                        }
+                    }
+                }
+            }
         }
         return true;
     }
@@ -80,13 +98,15 @@ public class SymTab {
     public void set(Declaration declaration) {
         String name = declaration.id;
         FunctionDeclaration fd;
+        boolean verify = false;
         //Se comprueba que no hayan procedimientos duplicados
         if (declaration.getKind() == Kind.fun_declaration) {
-            for (int i = 0; i < FunctionList.size(); i++) {
-                fd = FunctionList.get(i);
-                if (fd.id.equals(declaration.id)) {
-                    System.out.println("Error Semantico en fila " + declaration.fila + ", funcion " + name + " ya fue delclarada con los mismos parametros");
-                }
+            verify = searchFunction(declaration);
+//                fd = FunctionList.get(i);
+//                System.out.println(declaration.id+": "+declaration.params.toString());
+//                System.out.println(fd.id+": "+fd.params.toString());
+            if (!verify) {
+                System.out.println("Error Semantico en fila " + declaration.fila + ", funcion " + name + " ya fue delclarada con los mismos parametros");
             }
         }
         //Un identificador no puede ser redeclarado en alcances mas profundos

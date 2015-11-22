@@ -12,17 +12,22 @@ aNumber2;
 }
 
 
-void aProcedure2 ( void)
-{
-    ;
+ int aProcedure2 ( int number5, void aParam)
+{   
+   return  algo;
 }
 
-void aProcedure2 ( void)
-{
-    ;
+ int aProcedure2 ( int number5, void aParam)
+{   
+   ;
 }
 
-void aProcedure2 ( int number1)
+ int aProcedure2 ( int number5, int number1, void aParam)
+{   
+   ;
+}
+
+void aProcedure3 ( int number1)
 {
     ;
 }
@@ -44,6 +49,11 @@ int aProcedure4 ( int aNum1, void aNum2, int anArray1[], void anArray2[] )
     }
 }
 
+ int aProcedure2 ( int number5)
+{   
+   ;
+}
+
 
 /#==============#/
 /# main routine #/
@@ -52,6 +62,6 @@ int aProcedure4 ( int aNum1, void aNum2, int anArray1[], void anArray2[] )
 void main ( void )
 {   
     int aNumber1;
-    aProcedure1 ( );
+    aProcedure1 (x1);
 
 }

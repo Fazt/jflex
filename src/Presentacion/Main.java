@@ -83,7 +83,7 @@ public class Main {
             //primera pasada analisis semantico (analisis de alcance)
             par.root.ScopeTree(sVisit);
             //segunda pasada analisis semantico (typeCheck)
-            //par.root.GrapherTree(tcVisit);
+            par.root.TypeTree(tcVisit);
 ////            String cadenaGraph = visit.returnString(); //Cadena que contiene el grapher.
 ////            resultado = cadenaGraph;
 ////            crearDot(cadenaGraph, seleccion);
