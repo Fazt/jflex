@@ -21,7 +21,7 @@ int sumar(int array[],int x1) {
 int sumar(int array[]) {
     int n1;
     int suma;
-    sumar(array, suma);
+    sumar(x1, suma);
     n1 ::= 0;   
     suma ::= 0;
     while (n1 LT 3) {
@@ -39,8 +39,8 @@ void main(int x1) {
     array[1] ::= 2;
     array[2] ::= 3;
     x1::= 2+5;
-    sumar(pn);
+    sumar(1);
     sumar(x3);
     sumar(array[0]);
-    sumar(array[0],x3);
+    sumar(array[0],2);
 }

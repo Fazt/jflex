@@ -5,6 +5,7 @@
  */
 package AnalisisSemantico;
 
+import Tablas.Kind;
 import ast.Node;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
  */
 public class Util {
 
+    
     /**
      * Funcion que comprueba que una funcion este declarada con la misma
      * cantidad de parametros que la llamada a esa funcion. Tambien comprueba
@@ -22,14 +24,24 @@ public class Util {
      * la sobrecarga de funciones..
      *     
 *
+     */;
+    /**
+     * Funcion que comprueba que una funcion este declarada con la misma
+     * cantidad de parametros que la llamada a esa funcion. Tambien comprueba
+     * que el tipo de los parametros entregados sea el correcto. Tambien soporta
+     * la sobrecarga de funciones..
+     *     
      */
     static boolean testFun(Node local, List<Declaration> overload, Declaration d) {
         Declaration vardecl;
         List<String> variables = new LinkedList<>();
-        List<Declaration> declarations = new LinkedList<>();
+        //Se guardan los nombres de los parametros
         for (int i = 0; i < d.params.size(); i++) {
+            if(d.params.get(i).getKind()!= Kind.ExprConst){
             variables.add(d.params.get(i).getIdent());
+            }
         }
+        //Se busca la variable dentro del alcance, y si esta declarada se obtiene su tipo
         for (int i = 0; i < variables.size(); i++) {
             for (int j = local.alcance.size() - 1; j >= 0; j--) {
                 vardecl = local.alcance.get(j).get(variables.get(i));
@@ -43,19 +55,20 @@ public class Util {
                 }
             }
         }
-
+        //Se compara el tipo de los parametros con el de la funcion llamada
         for (int i = 0; i < overload.size(); i++) {
             if (overload.get(i).params.size() - 1 == d.params.size()) {
                 for (int j = 0; j < overload.get(i).params.size() - 1; j++) {
                     if (d.params.get(j).getTipo().equals(overload.get(i).params.get(j).getTipo())) {
+                        //Si son iguales, todo ok
                     } else {
-                        return false;
+                        return false; //si encuentra una diferencia, retorna falso
                     }
                 }
-                return true;
+                return true; // Cuando hacen match los tipos, retorna true
             }
         }
-        return false;
+        return false;// Si no encuentra la variable declarada retorna falso
     }
 
     /**
@@ -122,8 +135,23 @@ public class Util {
 
     }
     
-    public void testIni(){
-        
+    static boolean testIni(Declaration d, List<Node> asignaciones){
+        List<String> check = new LinkedList<>();
+        boolean t = false;
+        for (int i = 0; i < d.params.size(); i++) {
+            for (int j = 0; j < asignaciones.size(); j++) {
+                if (d.params.get(i).getKind() != Kind.ExprConst) {
+                    if (d.params.get(i).getIdent().equals(asignaciones.get(j).getChilds().get(0).getIdent())) {
+                        check.add(d.params.get(i).getIdent());
+                        break;
+                    }
+                }
+            }
+        }
+        if(d.params.size()==check.size()){
+            t= true;
+        }
+        return t;
     }
 
 }
