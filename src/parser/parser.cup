@@ -256,6 +256,7 @@ expression::= var:v ASIGN expression:e
             {: 
             this.parser.producciones += "expression::= var ::= expression  \n";
             RESULT = new ExprAsign(v,e,sym.ASIGN);
+            RESULT.fila = vleft+1;
             :}
             | simple_expression:se
             {:
@@ -397,10 +398,12 @@ call::=  ID:id PRI args:a PRD
             {:
             this.parser.producciones += "call::=  ID ( args ) \n";
             RESULT = new CallFunction(id,a);
+            RESULT.fila= aleft+1;
             :};
 args::=  arg_list:al 
             {:
             this.parser.producciones += "args::=  arg_list:al  \n";
+            al.fila= alleft+1;
             RESULT = al;
             :}
             |

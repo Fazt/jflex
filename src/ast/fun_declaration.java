@@ -1,17 +1,21 @@
 package ast;
 
+import AnalisisSemantico.Declaration;
+import AnalisisSemantico.SymTab;
 import java.util.Collections;
 import Visitor.Visitor;
 import Tablas.sym;
 import GraphVisitor.GrapherVisitor;
 import Tablas.Kind;
+import java.util.Hashtable;
+import java.util.LinkedList;
 
 
 public class fun_declaration extends Node {
 
     protected String ident;
     protected int tipos;
-
+    public SymTab st;
     public fun_declaration(int tipoLlega, String id, Node params, Node comp) {
         this.kind= Kind.fun_declaration;
         this.iNode = GrapherVisitor.nodeCount++;

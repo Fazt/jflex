@@ -23,35 +23,25 @@ import ast.selection_stmt;
 import ast.var_declaration;
 import java.util.ArrayList;
 import java.util.List;
+import AnalisisSemantico.ScopeVisitor;
+import ast.Node;
+import Tablas.*;
+import java.util.LinkedList;
 
 /**
  *
  * @author Spartan Clase que recorre el arbol realizando el chequeo de tipos
  */
-
 public class TypeCheckVisitor implements Visitor {
 
     public static ArrayList<Integer> VisitedNode = new ArrayList<>();
     private List<Declaration> Functions = new ArrayList<>();
 
-    boolean searchFunction(Declaration d) {
-        for (int i = 0; i < Functions.size(); i++) {
-            if (d.id.equals(Functions.get(i).id)) {
-                if (Functions.get(i).params.size() - 1 == d.params.size()) {
-                    for (int j = 0; j < (d.params.size() - 1); j++) {
-                        if (Functions.get(i).params.get(j).getTipo().equals(d.params.get(j).getTipo())) {
-                            return true;//Esta declarada con los parametros correctos
-                        }
-                    }
-                }
-            }
-        }
-        return false; //No esta declarada o tiene otros parametros
+    public TypeCheckVisitor() {
     }
 
     @Override
     public void visit(Program visitor) {
-
     }
 
     @Override
@@ -66,9 +56,7 @@ public class TypeCheckVisitor implements Visitor {
         d.id = visitor.getIdent();
         d.params = visitor.getChilds();
         d.fila = visitor.fila;
-        if (!searchFunction(d)) {
-            Functions.add(d);
-        }
+        Functions.add(d);
 
     }
 
@@ -108,41 +96,98 @@ public class TypeCheckVisitor implements Visitor {
 
     @Override
     public void visit(ExprAsign visitor) {
+        Node local = visitor.getPadre();
+        Node izq = visitor.getChilds().get(0);
+        Node der = visitor.getChilds().get(1);
+        Declaration vardecl;
+        String tipoIzq = "";
+        String tipoDer = "";
+        //Comprobar tipo lado izquierdo
+        //En el lado derecho solo pueden haber ExprVar
+        for (int j = local.alcance.size() - 1; j >= 0; j--) {
+            vardecl = local.alcance.get(j).get(izq.getIdent());
+            if (vardecl != null) {
+                tipoIzq = vardecl.type;
+                if(tipoIzq== "intArray"){
+                    tipoIzq="int";
+                }
+                break;
+            }
+        }
+        //Comprobar tipo lado Derecho   
+        //En el lado derecho puede haber un ExprConst, un ExprVar, un callFunction o un ExprBynary
+        switch (der.getKind()) {
+
+            case ExprVar:
+                for (int j = local.alcance.size() - 1; j >= 0; j--) {
+                    vardecl = local.alcance.get(j).get(der.getIdent());
+                    if (vardecl != null) {
+                        tipoDer = vardecl.type;
+                    }
+                }
+                break;
+            case ExprBynary:
+                tipoDer=Util.testBynaryExp(der, local);
+                break;
+            case ExprConst:
+                tipoDer = der.getTipo();
+                break;
+            case CallFunction:
+                break;
+            default:
+                throw new AssertionError(der.getKind().name());
+        }
+        
+        if(tipoIzq.equals(tipoDer)){
+            
+        }else{
+            System.out.println("Error de Tipo en fila: "+visitor.fila +" La asignacion tiene parametros incompatibles");
+        }
+    }
+
+    @Override
+    public void visit(ExprVar visitor
+    ) {
 
     }
 
     @Override
-    public void visit(ExprVar visitor) {
+    public void visit(ExprBynary visitor
+    ) {
 
     }
 
     @Override
-    public void visit(ExprBynary visitor) {
+    public void visit(ExprConst visitor
+    ) {
 
     }
 
     @Override
-    public void visit(ExprConst visitor) {
-
-    }
-
-    @Override
-    public void visit(CallFunction visitor) {
+    public void visit(CallFunction visitor
+    ) {
 //TODO: Pasar el numero de fila al callFunction
+        List<Declaration> overload = new LinkedList<>();
         Declaration d = new Declaration();
         d.id = visitor.getIdent();
         d.params = visitor.getChilds();
         d.fila = visitor.fila;
-        if (visitor.getChilds().size()==0) {
-            for (int i = 0; i < Functions.size(); i++) {
-                if (Functions.get(i).getIdent() == d.id && Functions.get(i).type != "void") {
-                    System.out.println("Error Semantico en fila " + d.fila + ", la funcion " + d.id + " no esta declarada o los parametros son erroneos");
-                }
+        for (int k = 0; k < Functions.size(); k++) {
+            Declaration dec = Functions.get(k);
+            if (dec.id.equals(d.id)) {
+                overload.add(dec);
             }
-        }else if (!searchFunction(d)) {
-            System.out.println("Error Semantico en fila " + d.fila + ", la funcion " + d.id + " no esta declarada o los parametros son erroneos");
+        }
+        if (overload.size() == 0) {
+            System.out.println("Error de Tipo en fila: "+visitor.fila +" La funcion" + d.id + " no esta declarada");
+        }
+        Node local = visitor.getPadre();
+        boolean test = true;
+        test = Util.testFun(local, overload, d);
+        if (test == false) {
+            System.out.println("Error de Tipoen fila: "+visitor.fila +" La funcion " + d.id + " tiene parametros distintos o de distinto tipo");
         }
 
     }
-
+    
 }

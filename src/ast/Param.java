@@ -27,12 +27,14 @@ public class Param extends Node {
             }
         } else {
             if (this.tipos == sym.VOID) {
-                this.type = "void[]";
+                this.type = "voidArray";
             } else {
-                this.type = "int[]";
+                this.type = "intArray";
             }
         }
+        Collections.reverse(this.childs);
     }
+
 
     @Override
     public void accept(Visitor visitor) {

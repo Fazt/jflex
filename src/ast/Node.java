@@ -1,13 +1,16 @@
 package ast;
 
+import AnalisisSemantico.Declaration;
 import AnalisisSemantico.ScopeVisitor;
 import AnalisisSemantico.TypeCheckVisitor;
 import java.util.LinkedList;
 import Visitor.Visitor;
 import GraphVisitor.GrapherVisitor;
 import Tablas.*;
+import java.util.Hashtable;
 public abstract class Node {
 
+    public LinkedList<Hashtable<String, Declaration>> alcance = new  LinkedList<Hashtable<String, Declaration>>();
     protected String ident;
     protected String type = "";
     protected String valor;

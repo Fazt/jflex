@@ -30,6 +30,7 @@ public class CallFunction extends Node {
                 arg = arg.getHermano();
             }
         }
+        Collections.reverse(this.childs);
     }
 
     @Override

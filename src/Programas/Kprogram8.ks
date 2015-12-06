@@ -44,7 +44,7 @@ int aProcedure4 ( int aNum1, void aNum2, int anArray1[], void anArray2[] )
     anArray2[3] ::= anarray3[4];
     ; ;
     while (aNum3 GT aNum4)
-        ;
+        ;;;;;
     while (aNum3+2 GEQ 3*aNum5)
     {
         return;

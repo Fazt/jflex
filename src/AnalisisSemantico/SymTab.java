@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -19,23 +20,20 @@ import java.util.List;
  * @author Spartan Clase que se encarga de almacenar los simbolos encontrados en
  * los distintos alcances (scopes) del arbol construido en la etapa de sintaxis.
  */
-public class SymTab {
+public final class SymTab {
 
-    public static final int PREDEFINED_SCOPE = 1, FUNCTION_SCOPE = 2, PARAMETER_SCOPE = 3,
-            LOCAL_SCOPE = 4, INVALID_SCOPE = -1;
+    public static final int PREDEFINED_SCOPE = 0, FUNCTION_SCOPE = 1, PARAMETER_SCOPE = 2,
+            LOCAL_SCOPE = 3, INVALID_SCOPE = -1;
 
     /**
      * Lista que almacena los distintos alcances encontrados al reviasarl el
      * codigo. Guarda un objeto de tipo Declaration(declaracion) y un String
      * referido al Nombre del nodo.
      */
-    public SymTab st;
-    List<Hashtable<String, Declaration>> scopes = new ArrayList<Hashtable<String, Declaration>>();
-    List<FunctionDeclaration> FunctionList = new ArrayList<>();
-    int scopeNumber = 0;
+    public LinkedList<Hashtable<String, Declaration>> scopes = new  LinkedList<Hashtable<String, Declaration>>();
+    public List<FunctionDeclaration> FunctionList = new ArrayList<>();
 
     public SymTab() {
-        st = this;
         newScope();//se crea un alcance al procesar el programa.
     }
 
@@ -59,20 +57,6 @@ public class SymTab {
         }
         scopes.remove(scopes.size() - 1);
     }
-    
-    public void closeScope(int algo, String cosa) {
-        if (scopes.size() <= 1) {       
-            throw new RuntimeException("SymTab.closeScope() sobrepaso el limite de llamados!");
-        }
-        scopes.remove(scopes.size() - 1);
-    }
-    
-    public void closeScope(String cosa, int algo) {
-        if (scopes.size() <= 1) {
-            throw new RuntimeException("SymTab.closeScope() sobrepaso el limite de llamados!");
-        }
-        scopes.remove(scopes.size() - 1);
-    }
 
     public boolean searchFunction(Declaration d) {
 
@@ -80,6 +64,7 @@ public class SymTab {
             if (d.id.equals(FunctionList.get(i).id)) {
                 if (FunctionList.get(i).params.size() == d.params.size()) {
                     for (int j = 0; j < (d.params.size() - 1); j++) {
+                        //TODO:Verificar tipos
                         if (FunctionList.get(i).params.get(j).getIdent().equals(d.params.get(j).getIdent())) {
                             return false;
                         }
