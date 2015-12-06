@@ -147,6 +147,26 @@ public class TypeCheckVisitor implements Visitor {
         } else {
             System.out.println("Error de Tipo en fila: " + visitor.fila + " La asignacion tiene parametros incompatibles");
         }
+        Declaration d1 = new Declaration();
+        Declaration d2 = new Declaration();
+        d1.id = izq.getIdent();
+        d1.params = izq.getChilds();
+        d1.fila = izq.fila;
+        d2.id = der.getIdent();
+        d2.params = der.getChilds();
+        d2.fila = der.fila;
+        if (d1.getKind() == Kind.ExprVar) {
+            boolean asign = Util.testIni(d1, asignaciones);
+            if (asign == false) {
+                System.out.println("Error de Tipo en fila: " + visitor.fila + ", la variable "+ d1.getIdent()+" no ha sido inicializada");
+            }
+        }
+        if (d2.getKind() == Kind.ExprVar) {
+            boolean asign = Util.testIni(d2, asignaciones);
+            if (asign == false) {
+                System.out.println("Error de Tipo en fila: " + visitor.fila + ", la variable "+ d2.getIdent()+" no ha sido inicializada");
+            }
+        }
     }
 
     @Override
@@ -191,8 +211,8 @@ public class TypeCheckVisitor implements Visitor {
         }
 
         //Se comprueba que los parametros esten inicializados
-        boolean asign=Util.testIni(d, asignaciones);
-        if (asign==false){
+        boolean asign = Util.testIni(d, asignaciones);
+        if (asign == false) {
             System.out.println("Error de Tipo en fila: " + visitor.fila + " Un parametro no ha sido inicializado");
         }
 

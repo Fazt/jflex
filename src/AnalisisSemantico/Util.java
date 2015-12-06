@@ -16,7 +16,6 @@ import java.util.List;
  */
 public class Util {
 
-    
     /**
      * Funcion que comprueba que una funcion este declarada con la misma
      * cantidad de parametros que la llamada a esa funcion. Tambien comprueba
@@ -24,7 +23,8 @@ public class Util {
      * la sobrecarga de funciones..
      *     
 *
-     */;
+     */
+    ;
     /**
      * Funcion que comprueba que una funcion este declarada con la misma
      * cantidad de parametros que la llamada a esa funcion. Tambien comprueba
@@ -37,8 +37,8 @@ public class Util {
         List<String> variables = new LinkedList<>();
         //Se guardan los nombres de los parametros
         for (int i = 0; i < d.params.size(); i++) {
-            if(d.params.get(i).getKind()!= Kind.ExprConst){
-            variables.add(d.params.get(i).getIdent());
+            if (d.params.get(i).getKind() != Kind.ExprConst) {
+                variables.add(d.params.get(i).getIdent());
             }
         }
         //Se busca la variable dentro del alcance, y si esta declarada se obtiene su tipo
@@ -121,10 +121,10 @@ public class Util {
             default:
                 throw new AssertionError(Bder.getKind().name());
         }
-        if(tIzq == "intArray"){
+        if (tIzq == "intArray") {
             tIzq = "int";
         }
-        if(tDer == "intArray"){
+        if (tDer == "intArray") {
             tDer = "int";
         }
         if (tIzq.equals(tDer)) {
@@ -134,22 +134,24 @@ public class Util {
         }
 
     }
-    
-    static boolean testIni(Declaration d, List<Node> asignaciones){
+
+    static boolean testIni(Declaration d, List<Node> asignaciones) {
         List<String> check = new LinkedList<>();
         boolean t = false;
         for (int i = 0; i < d.params.size(); i++) {
-            for (int j = 0; j < asignaciones.size(); j++) {
-                if (d.params.get(i).getKind() != Kind.ExprConst) {
+            if (d.params.get(i).getKind() != Kind.ExprConst) {
+                for (int j = 0; j < asignaciones.size(); j++) {
                     if (d.params.get(i).getIdent().equals(asignaciones.get(j).getChilds().get(0).getIdent())) {
                         check.add(d.params.get(i).getIdent());
                         break;
                     }
                 }
+            }else{
+                check.add("const");
             }
         }
-        if(d.params.size()==check.size()){
-            t= true;
+        if (d.params.size() == check.size()) {
+            t = true;
         }
         return t;
     }
